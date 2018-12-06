@@ -1,34 +1,34 @@
 [![alt text](https://www.flow.cl/images/header/logo-flow.svg)](https://www.flow.cl)
-[![build status](https://travis-ci.com/darkghosthunter/flowsdk.svg?branch=master)](https://travis-ci.com/darkghosthunter/flowsdk)
+[![Build Status](https://travis-ci.com/DarkGhostHunter/FlowSdk.svg?branch=master)](https://travis-ci.com/DarkGhostHunter/FlowSdk)
 
-# flow sdk 
+# Flow SDK 
 
-the simplest (and unofficial) sdk for flow you will find.
+The simplest (and unofficial) SDK for Flow you will find.
 
-[flow](https://www.flow.cl) is a chilean payment gateway that acts as a middleman for webpay plus, onepay, servipag, multicaja and cryptocompra.
+[Flow](https://www.flow.cl) is a chilean payment gateway that acts as a middleman for Webpay Plus, Onepay, Servipag, Multicaja and CryptoCompra.
 
-with flow, you don't have to register in each service and comply with each of their sdk. flow will be in charge of the money collection and delivering to your commerce, whatever payment method the customer uses (and you want to enable). 
+With Flow, you don't have to register in each service and comply with each of their SDK. Flow will be in charge of the money collection and delivering to your commerce, whatever payment method the customer uses (and you want to enable). 
 
-## requirements
+## Requirements
 
-* a [flow account](https://www.flow.cl/app/web/register.php)
-* php 7.1.3+
+* A [Flow account](https://www.flow.cl/app/web/register.php)
+* PHP 7.1.3+
 * ext-openssl
 * ext-curl
 
-## install
+## Install
 
-install it in your project using composer.
+Install it in your project using Composer.
 
 ```bash
 composer require darkghosthunter/flow-sdk
 ```
 
-### manual installation
+### Manual installation
 
-if you don't have composer, you need to download `composer.phar`, and php manually if it's not available globally in your systems.
+If you don't have Composer, you need to download `composer.phar`, and PHP manually if it's not available globally in your systems.
 
-once you're done, download this package into your server (or your own computer), put the `composer.phar` file inside and let composer download the required packages.
+Once you're done, download this package into your server (or your own computer), put the `composer.phar` file inside and let Composer download the required packages.
 
 ```bash
 cd /path/to/flow-sdk
@@ -36,36 +36,36 @@ cd /path/to/flow-sdk
 path/to/php composer.phar install --no-dev
 ```
 
-then load the package anywhere in your code calling the composer autoloader:
+Then load the package anywhere in your code calling the Composer autoloader:
 
 ```php
 <?php
 
-// load the flow sdk.
-include_once(__dir__ . '/path/to/flow-sdk/vendor/autoloader.php');
+// Load the Flow SDK.
+include_once(__DIR__ . '/path/to/flow-sdk/vendor/autoloader.php');
 
-// load my app
-include_once(__dir__ . '/www/index.php');
+// Load my app
+include_once(__DIR__ . '/www/index.php');
 ```
 
-> if you did this in your own computer, its recommended to zip the package and upload it to your server, and there use a web ui file manager and decompress it. uploading multiple files may take you a lot of minutes instead of just one.
+> If you did this in your own computer, its recommended to zip the package and upload it to your server, and there use a Web UI File Manager and decompress it. Uploading multiple files may take you a lot of minutes instead of just one.
 
-## usage
+## Usage
 
-[refer to the wiki](wiki) for how to use this package.
+[Refer to the Wiki](wiki) for how to use this package.
 
-## extending
+## Extending
 
-this package uses [semantic versioning](https://semver.org/).
+This package uses [Semantic Versioning](https://semver.org/).
 
-just issue a pr (pull request) with good code quality and all tests passed (or add new ones) for new functionality, bugs, cleaning or whatever.  
+Just issue a PR (Pull Request) with good code quality and all tests passed (or add new ones) for new functionality, bugs, cleaning or whatever.  
 
-## roadmap
+## Roadmap
 
-refer to the project part of this package.
+Refer to the Project part of this package.
 
-## license
+## License
 
-this package is licenced by the [mit license](license).
+This package is licenced by the [MIT License](LICENSE).
 
-this package is not related in any way, directly or indirectly, to any of the services, companies, products and/or services referenced in this package.
+This package is not related in any way, directly or indirectly, to any of the services, companies, products and/or services referenced in this package.
