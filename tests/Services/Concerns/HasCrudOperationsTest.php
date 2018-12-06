@@ -125,4 +125,79 @@ class HasCrudOperationsTest extends TestCase
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
     }
+
+    public function testCantGet()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $this->service = new class($this->mockFlow) extends BaseService {
+            use HasCrudOperations;
+            protected $permittedActions = [
+                'get'    => false,
+            ];
+        };
+
+        $this->service->get('id');
+
+    }
+
+    public function testCantCommit()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $this->service = new class($this->mockFlow) extends BaseService {
+            use HasCrudOperations;
+            protected $permittedActions = [
+                'commit'    => false,
+            ];
+        };
+
+        $this->service->commit([]);
+
+    }
+
+    public function testCantCreate()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $this->service = new class($this->mockFlow) extends BaseService {
+            use HasCrudOperations;
+            protected $permittedActions = [
+                'create'    => false,
+            ];
+        };
+
+        $this->service->create([]);
+
+    }
+
+    public function testCantUpdate()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $this->service = new class($this->mockFlow) extends BaseService {
+            use HasCrudOperations;
+            protected $permittedActions = [
+                'update'    => false,
+            ];
+        };
+
+        $this->service->update([]);
+
+    }
+
+    public function testCantDelete()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $this->service = new class($this->mockFlow) extends BaseService {
+            use HasCrudOperations;
+            protected $permittedActions = [
+                'delete'    => false,
+            ];
+        };
+
+        $this->service->delete('id');
+
+    }
 }

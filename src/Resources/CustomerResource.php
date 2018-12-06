@@ -22,7 +22,6 @@ class CustomerResource extends BasicResource
         if ($this->exists) {
             return $this->service->registerCard($this->getId(), $urlReturn);
         }
-        // TODO: Exception: Cannot register card if the Customer doesn't exist
         return false;
     }
 
@@ -36,7 +35,6 @@ class CustomerResource extends BasicResource
         if ($this->exists) {
             return $this->service->unregisterCard($this->getId());
         }
-        // TODO: Exception: Cannot unregister card if the Customer doesn't exist
         return false;
     }
 
@@ -53,7 +51,6 @@ class CustomerResource extends BasicResource
                 $this->getIdKey() => $this->getId()
             ]);
         }
-        // TODO: Exception: Cannot charge a not-existing Customer or without Credit Card
         return false;
     }
 
@@ -69,7 +66,6 @@ class CustomerResource extends BasicResource
         if ($this->exists) {
             return $this->service->reverseCharge($idType ?? 'customerOrder', $value);
         }
-        // TODO: Exception: Cannot reverse a Charge if the Customer doesn't exist
         return false;
     }
 
@@ -85,7 +81,6 @@ class CustomerResource extends BasicResource
         if ($this->exists) {
             return $this->service->getChargesPage($this->getId(), $page, $options);
         }
-        // TODO: Exception: Cannot get Charge Page if the Customer doesn't exist
         return false;
     }
 }

@@ -31,7 +31,7 @@ trait HasCrudOperations
                 $this->performCommit($attributes)
             );
         }
-        return false;
+        throw new \BadMethodCallException('Method '.__FUNCTION__.' does not exist');
     }
 
     /**
@@ -64,7 +64,7 @@ trait HasCrudOperations
                 $this->performCreate($attributes)
             );
         }
-        return false;
+        throw new \BadMethodCallException('Method '.__FUNCTION__.' does not exist');
     }
 
     /**
@@ -90,7 +90,7 @@ trait HasCrudOperations
                 $this->performGet($this->id, $id)
             );
         }
-        return false;
+        throw new \BadMethodCallException('Method '.__FUNCTION__.' does not exist');
     }
 
     /**
@@ -122,7 +122,7 @@ trait HasCrudOperations
                 $this->performUpdate($attributes)
             );
         }
-        return false;
+        throw new \BadMethodCallException('Method '.__FUNCTION__.' does not exist');
     }
 
     /**
@@ -155,6 +155,7 @@ trait HasCrudOperations
                 $this->performDelete($this->id, $id)
             );
         }
+        throw new \BadMethodCallException('Method '.__FUNCTION__.' does not exist');
     }
 
     /**
