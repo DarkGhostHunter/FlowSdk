@@ -7,7 +7,7 @@
         colors="true">
     <testsuites>
         <testsuite name="FlowSdk Test Suite">
-            <directory suffix="Test">tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
     <filter>

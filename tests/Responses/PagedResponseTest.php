@@ -40,8 +40,8 @@ class PagedResponseTest extends TestCase
             new BasicResource(['item' => 3]), new BasicResource(['item' => 4]),
         ]);
 
-        $this->assertIsArray($this->response->items);
-        $this->assertIsArray($this->response->getItemsAttribute());
+        $this->assertInternalType('array', $this->response->items);
+        $this->assertInternalType('array', $this->response->getItemsAttribute());
         $this->assertInstanceOf(BasicResource::class, $this->response->items[0]);
         $this->assertInstanceOf(BasicResource::class, $this->response->items[1]);
         $this->assertInstanceOf(BasicResource::class, $this->response->items[2]);

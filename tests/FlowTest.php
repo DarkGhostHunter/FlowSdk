@@ -63,7 +63,7 @@ class FlowTest extends TestCase
             'card.urlReturn'        => 'https://app.com/card/return',
         ]);
 
-        $this->assertIsArray($this->flow->getReturnUrls());
+        $this->assertInternalType('array', $this->flow->getReturnUrls());
         $this->assertEquals($urls, $this->flow->getReturnUrls());
     }
 
@@ -91,7 +91,7 @@ class FlowTest extends TestCase
             'card.urlReturn'        => 'https://app.com/card/return',
         ];
 
-        $this->assertIsArray($this->flow->getReturnUrls());
+        $this->assertInternalType('array', $this->flow->getReturnUrls());
         $this->assertEquals($urls, $this->flow->getReturnUrls());
     }
 
@@ -113,7 +113,7 @@ class FlowTest extends TestCase
             'customer.registered'   => 'https://finances.app.com/webhooks/customer-registered',
         ];
 
-        $this->assertIsArray($this->flow->getWebhookUrls());
+        $this->assertInternalType('array', $this->flow->getWebhookUrls());
         $this->assertEquals($urls, $this->flow->getWebhookUrls());
     }
 
@@ -127,7 +127,7 @@ class FlowTest extends TestCase
             'customer.registered'   => 'https://finances.app.com/webhooks/customer-registered',
         ]);
 
-        $this->assertIsArray($this->flow->getWebhookUrls());
+        $this->assertInternalType('array', $this->flow->getWebhookUrls());
         $this->assertEquals($urls, $this->flow->getWebhookUrls());
     }
 
@@ -183,7 +183,7 @@ class FlowTest extends TestCase
         $this->assertEquals($webhookUrls, $this->flow->getWebhookUrls());
 
         foreach ($webhookUrls as $key => $value) {
-            $this->assertStringContainsString($secret, $this->flow->getWebhookWithSecret($key));
+            $this->assertContains($secret, $this->flow->getWebhookWithSecret($key));
         }
 
     }

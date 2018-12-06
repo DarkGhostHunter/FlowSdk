@@ -105,7 +105,7 @@ class CustomerResourceTest extends TestCase
         ]);
 
         $this->assertInstanceOf(PagedResponse::class, $response);
-        $this->assertIsArray($response->items);
+        $this->assertInternalType('array', $response->items);
         $this->assertInstanceOf(BasicResource::class, $response->items[0]);
         $this->assertInstanceOf(BasicResource::class, $response->items[1]);
         $this->assertInstanceOf(BasicResource::class, $response->items[2]);

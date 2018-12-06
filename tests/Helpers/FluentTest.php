@@ -77,7 +77,7 @@ class FluentTest extends TestCase
             'foo' => 'bar'
         ]);
 
-        $this->assertIsArray($fluent->toArray());
+        $this->assertInternalType('array', $fluent->toArray());
     }
 
     public function testGetMerge()
@@ -93,7 +93,7 @@ class FluentTest extends TestCase
             ];
         };
 
-        $this->assertIsArray($fluent->toArray());
+        $this->assertInternalType('array', $fluent->toArray());
         $this->assertEquals([
             'key' => 'value',
             'foo' => 'notBar',
@@ -117,7 +117,7 @@ class FluentTest extends TestCase
 
         $fluent = Fluent::fromJson($string);
 
-        $this->assertIsString((string)$fluent);
+        $this->assertInternalType('string', (string)$fluent);
         $this->assertEquals(json_decode($string, true), $fluent->toArray());
     }
 
