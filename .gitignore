@@ -5,4 +5,4 @@ examples
 .env.test
 .idea
 composer.phar
-
+clover.xml
