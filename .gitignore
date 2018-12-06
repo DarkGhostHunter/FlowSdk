@@ -4,5 +4,4 @@ composer.lock
 examples
 .env.test
 .idea
-clover.xml
-coveralls-upload.json
+/build/
