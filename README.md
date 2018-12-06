@@ -1,5 +1,5 @@
 [![alt text](https://www.flow.cl/images/header/logo-flow.svg)](https://www.flow.cl)
-[![Build Status](https://travis-ci.com/DarkGhostHunter/FlowSdk.svg?branch=master)](https://travis-ci.com/DarkGhostHunter/FlowSdk)
+[![Build Status](https://travis-ci.com/DarkGhostHunter/FlowSdk.svg?branch=master)](https://travis-ci.com/DarkGhostHunter/FlowSdk) [![Coverage Status](https://coveralls.io/repos/github/DarkGhostHunter/FlowSdk/badge.svg?branch=master)](https://coveralls.io/github/DarkGhostHunter/FlowSdk?branch=master)
 
 # Flow SDK 
 

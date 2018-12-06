@@ -1,8 +1,8 @@
-logs
 /vendor/
+composer.phar
 composer.lock
 examples
 .env.test
 .idea
-composer.phar
 clover.xml
+coveralls-upload.json
