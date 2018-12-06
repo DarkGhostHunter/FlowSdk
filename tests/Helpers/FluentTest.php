@@ -2,6 +2,8 @@
 
 namespace Tests\Helpers;
 
+use DarkGhostHunter\FlowSdk\Exceptions\Fluent\AttributesOnlyException;
+use DarkGhostHunter\FlowSdk\Exceptions\Fluent\AttributesRequiredException;
 use DarkGhostHunter\FlowSdk\Helpers\Fluent;
 use PHPUnit\Framework\TestCase;
 
@@ -41,6 +43,64 @@ class FluentTest extends TestCase
 
         $this->assertEquals('bar', $fluent->get('foo'));
         $this->assertEquals('isClosure', $fluent->get('closure'));
+    }
+
+    public function testAttributesRequired()
+    {
+        $fluent = new class([
+            'foo' => 'bar',
+            'key' => 'value'
+        ]) extends Fluent {
+            protected $required = [
+                'foo'
+            ];
+        };
+
+        $this->assertEquals('bar', $fluent->foo);
+        $this->assertEquals('value', $fluent->key);
+    }
+
+    public function testAttributesRequiredException()
+    {
+        $this->expectException(AttributesRequiredException::class);
+
+        $fluent = new class([
+            'foo' => 'bar',
+            'notKey' => 'value',
+        ]) extends Fluent {
+            protected $required = [
+                'key'
+            ];
+        };
+    }
+
+    public function testAttributesOnly()
+    {
+        $fluent = new class([
+            'foo' => 'bar',
+        ]) extends Fluent {
+            protected $required = [
+                'foo'
+            ];
+            protected $restrained = true;
+        };
+
+        $this->assertEquals('bar', $fluent->foo);
+    }
+
+    public function testAttributesOnlyException()
+    {
+        $this->expectException(AttributesOnlyException::class);
+
+        $fluent = new class([
+            'foo' => 'bar',
+            'key' => 'value',
+        ]) extends Fluent {
+            protected $required = [
+                'key'
+            ];
+            protected $restrained = true;
+        };
     }
 
     public function testOffsetSet()

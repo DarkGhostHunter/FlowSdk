@@ -5,8 +5,8 @@ namespace DarkGhostHunter\FlowSdk\Helpers;
 use ArrayAccess;
 use Closure;
 use Countable;
-use DarkGhostHunter\FlowSdk\Exceptions\Flow\AttributesOnlyException;
-use DarkGhostHunter\FlowSdk\Exceptions\Transactions\AttributesRequiredException;
+use DarkGhostHunter\FlowSdk\Exceptions\Fluent\AttributesOnlyException;
+use DarkGhostHunter\FlowSdk\Exceptions\Fluent\AttributesRequiredException;
 use JsonSerializable;
 
 class Fluent implements ArrayAccess, JsonSerializable, Countable
