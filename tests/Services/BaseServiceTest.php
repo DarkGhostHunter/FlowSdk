@@ -69,7 +69,7 @@ class BaseServiceTest extends TestCase
         $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertInstanceOf(ServiceInterface::class, $resource->getService());
         $this->assertInternalType('bool', $resource->exists());
-        $this->assertContains('baseService', $resource->getType());
+        $this->assertInternalType('string', $resource->getType());
     }
 
     public function testCan()
