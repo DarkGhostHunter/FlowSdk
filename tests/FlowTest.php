@@ -71,7 +71,7 @@ class FlowTest extends TestCase
     {
         $this->flow->setReturnUrls($urls = [
             'payment.urlReturn'     => $return = 'https://app.com/payment/return',
-            'card.urlReturn'        => 'https://app.com/card/return',
+            'card.urlReturn'        => 'https://app.com',
         ]);
 
         $this->assertEquals($return, $this->flow->getReturnUrls('payment.urlReturn'));
@@ -241,6 +241,13 @@ class FlowTest extends TestCase
         $this->flow->setAdapter(\Mockery::instanceMock(AdapterInterface::class));
 
         $this->assertInstanceOf(AdapterInterface::class, $this->flow->getAdapter());
+    }
+
+    public function testInvalidService()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $this->flow->invalidService();
     }
 
     public function testSettlement()

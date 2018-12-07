@@ -401,6 +401,8 @@ class Flow
             return $this->services[$name]
                 ?? $this->services[$name] = new $this->servicesMap[$name]($this);
         }
+
+        throw new \BadMethodCallException("Method $name does not exists");
     }
 
 }

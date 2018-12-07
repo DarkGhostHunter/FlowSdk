@@ -41,7 +41,18 @@ class SubscriptionResourceTest extends TestCase
 
         $subscription = $this->resource->cancel(true);
 
-        $this->assertInstanceOf(SubscriptionResource::class, $subscription);
-        $this->assertEquals('bar', $subscription->foo);
+        $this->assertTrue($subscription);
+        $this->assertEquals('bar', $this->resource->foo);
+    }
+
+    public function testDoesntCancelIfCancelled()
+    {
+        $this->mockService->expects('getId')->andReturn('subscriptionId');
+
+        $this->resource->status = 4;
+
+        $subscription = $this->resource->cancel(true);
+
+        $this->assertFalse($subscription);
     }
 }

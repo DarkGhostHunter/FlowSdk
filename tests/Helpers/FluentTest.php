@@ -16,7 +16,16 @@ class FluentTest extends TestCase
             'foo' => 'bar'
         ]);
 
+        unset($fluent->foo);
+
+        $this->assertEmpty($fluent->toArray());
+
+        $fluent = new Fluent([
+            'foo' => 'bar'
+        ]);
+
         unset($fluent['foo']);
+
 
         $this->assertEmpty($fluent->toArray());
     }
@@ -30,6 +39,7 @@ class FluentTest extends TestCase
             protected $hidden = ['hidden'];
         };
 
+        $this->assertEquals(['hidden'], $fluent->getHidden());
         $this->assertArrayNotHasKey('hidden', $fluent->toArray());
 
     }
@@ -43,6 +53,12 @@ class FluentTest extends TestCase
 
         $this->assertEquals('bar', $fluent->get('foo'));
         $this->assertEquals('isClosure', $fluent->get('closure'));
+        $this->assertEquals(
+            'closureReturnsString',
+            $fluent->get('absent', function() {
+                return 'closureReturnsString';
+            })
+        );
     }
 
     public function testAttributesRequired()
@@ -109,6 +125,7 @@ class FluentTest extends TestCase
             'foo' => 'bar'
         ]);
 
+        $this->assertEquals('bar', $fluent['foo'] = 'bar');
         $this->assertEquals('bar', $fluent['foo']);
     }
 
@@ -152,6 +169,8 @@ class FluentTest extends TestCase
                 'foo' => 'notBar',
             ];
         };
+
+        $this->assertEquals(['toMerge'], $fluent->getMerge());
 
         $this->assertInternalType('array', $fluent->toArray());
         $this->assertEquals([
@@ -306,6 +325,7 @@ class FluentTest extends TestCase
         ]);
 
         $this->assertEquals($array, $fluent->getRawAttributes());
+        $this->assertEquals(['key' => 'value'], $fluent->getRawAttributes('key'));
 
     }
 

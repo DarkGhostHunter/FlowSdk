@@ -159,7 +159,7 @@ class BasicResource extends Fluent implements ResourceInterface
      * @param bool $exists
      * @return void
      */
-    public function setExists(bool $exists)
+    public function setExists(bool $exists = true)
     {
         $this->exists = $exists;
     }
@@ -224,7 +224,7 @@ class BasicResource extends Fluent implements ResourceInterface
     public function commit()
     {
         if (!$this->exists && !$this->response) {
-            return $this->response = $this->service->commit($this);
+            return $this->response = $this->service->commit($this->toArray());
         }
         return false;
     }
@@ -235,14 +235,12 @@ class BasicResource extends Fluent implements ResourceInterface
     public function refresh()
     {
         if ($this->exists) {
-            $refreshed = $this->service->get($this->service->getId(), $this->{$this->service->getId()});
-            if ($refreshed) {
+            if ($refreshed = $this->service->get($this->getIdKey(), $this->getId())) {
                 $this->setAttributes(
                     $refreshed->toArray()
                 );
                 return true;
             }
-
         }
         return false;
     }
@@ -253,22 +251,21 @@ class BasicResource extends Fluent implements ResourceInterface
      */
     public function save()
     {
+        // Try to save it first.
         if ($this->exists) {
-
-            $updated = $this->service->update($this->service->getId(), $this->{$this->service->getId()});
-
-            if ($updated) {
+            if ($updated = $this->service->update($this->getId(), $this->toArray())) {
                 $this->setAttributes($updated->toArray());
                 return true;
             }
 
-        } elseif ($created = $this->service->create($this->{$this->service->getId()})) {
-
-            $this->setAttributes($created->toArray());
-            return $this->exists = true;
         }
 
-        return false;
+        // It doesn't exist, so try to create it.
+        $created = $this->service->create($this->toArray());
+
+        $this->setAttributes($created->toArray());
+
+        return $this->exists = true;
     }
 
     /**
@@ -278,8 +275,8 @@ class BasicResource extends Fluent implements ResourceInterface
      */
     public function delete()
     {
-        if ($this->exists && $deleted = $this->service->delete($this->{$this->service->getId()})) {
-            $this->setAttributes($deleted);
+        if ($this->exists && $deleted = $this->service->delete($this->getId())) {
+            $this->setAttributes($deleted->toArray());
             return !$this->exists = false;
         }
         return false;

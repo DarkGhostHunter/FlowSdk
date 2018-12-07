@@ -48,6 +48,11 @@ class GuzzleAdapterTest extends TestCase
         $this->adapter->setClient($this->mockClient);
     }
 
+    public function testGetsClient()
+    {
+        $this->assertInstanceOf(Client::class, $this->adapter->getClient());
+    }
+
     public function testPost()
     {
         $logger = \Mockery::instanceMock(LoggerInterface::class);

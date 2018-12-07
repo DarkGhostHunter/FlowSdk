@@ -2,6 +2,8 @@
 
 namespace DarkGhostHunter\FlowSdk\Services;
 
+use DarkGhostHunter\FlowSdk\Resources\InvoiceResource;
+
 class Invoice extends BaseService
 {
     use Concerns\HasCrudOperations;
@@ -33,6 +35,13 @@ class Invoice extends BaseService
         'delete' => false,
     ];
 
+    /**
+     * Resource Class to instantiate
+     *
+     * @var InvoiceResource
+     */
+    protected $resourceClass = InvoiceResource::class;
+
     /*
     |--------------------------------------------------------------------------
     | Operations
@@ -43,18 +52,21 @@ class Invoice extends BaseService
      * Cancels an Invoice
      *
      * @param string $id
-     * @return array
+     * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|\DarkGhostHunter\FlowSdk\Resources\BasicResource|InvoiceResource
+     * @throws \Exception
      */
     public function cancel(string $id)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Cancelling Invoice $id");
 
-        return $this->flow->getAdapter()->post(
-            $this->endpoint . '/cancel',
-            [
-                $this->id => $id,
-            ]
+        return $this->make(
+            $this->flow->getAdapter()->post(
+                $this->endpoint . '/cancel',
+                [
+                    $this->id => $id,
+                ]
+            )
         );
     }
 

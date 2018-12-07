@@ -175,4 +175,16 @@ class CustomerResourceTest extends TestCase
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertEquals("$url?token=$token", $response->getUrl());
     }
+
+    public function testDoesntRegisterCard()
+    {
+        $this->mockService->expects('getId')->andReturn('customerId');
+
+        $this->resource->setExists(false);
+
+        $response = $this->resource->registerCard('http://app.com/return');
+
+        $this->assertFalse($response);
+
+    }
 }

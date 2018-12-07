@@ -182,7 +182,7 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
     public function getRawAttributes(...$only)
     {
         return count($only)
-            ? array_intersect_key(array_flip($only), $this->attributes)
+            ? array_intersect_key($this->attributes, array_flip($only))
             : $this->attributes;
     }
 

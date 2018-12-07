@@ -118,8 +118,18 @@ trait HasCrudOperations
 
             $this->flow->getLogger()->debug("Updating Resource Id: $this->id => $id");
 
+            $attributes = count($attributes) === 1 && is_array($attributes[0])
+                ? $attributes[0]
+                : $attributes;
+
+            $attributes = $this->editableAttributes
+                ? array_intersect_key($attributes, array_flip($this->editableAttributes))
+                : $attributes;
+
             return $this->make(
-                $this->performUpdate($attributes)
+                $this->performUpdate(
+                    array_merge($attributes, [$this->getId() => $id])
+                )
             );
         }
         throw new \BadMethodCallException('Method '.__FUNCTION__.' does not exist');
@@ -136,9 +146,7 @@ trait HasCrudOperations
     {
         return $this->flow->getAdapter()->post(
             $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['update'] ?? 'edit'),
-            $this->editableAttributes
-                ? array_intersect_key(array_flip($this->editableAttributes), $attributes)
-                : $attributes
+            $attributes
         );
     }
 

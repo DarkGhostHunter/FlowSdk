@@ -12,11 +12,11 @@ class SubscriptionResource extends BasicResource
      */
     public function cancel($atPeriodEnd = false)
     {
-        if ($cancelled = $this->service->cancel($this->getId(), $atPeriodEnd)) {
+        if ($this->status !== 4 && $cancelled = $this->service->cancel($this->getId(), $atPeriodEnd)) {
             $this->setAttributes(
                 $cancelled->toArray()
             );
-            return $this;
+            return true;
         }
         return false;
     }
