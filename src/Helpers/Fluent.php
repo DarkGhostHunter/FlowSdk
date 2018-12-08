@@ -248,16 +248,6 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
     }
 
     /**
-     * Serializes the object to a JSON string
-     *
-     * @return string
-     */
-    public function toJson()
-    {
-        return json_encode($this->jsonSerialize());
-    }
-
-    /**
      * String representation of the class
      *
      * @return string

@@ -71,11 +71,42 @@ class GuzzleAdapter implements AdapterInterface
 
         $original = $data;
 
-        // Add the API Key
-        $data['apiKey'] = $this->credentials->apiKey;
+        $data = $this->preparePostData($data);
 
         // Log the Transactions
         $this->logInfo("Sending Transaction to $endpoint: \n". json_encode($original));
+
+        try {
+            $response = $this->client->post(
+                $this->flow->getEndpoint() . '/' . $endpoint,
+                ['form_params' => $data]
+            );
+        } catch (\Exception $exception) {
+            $this->logError("Error Sending transaction to $endpoint:\n". json_encode($original));
+            throw new AdapterException(json_encode($original), 0, $exception);
+        }
+
+        if ($response->getStatusCode() === 200) {
+            $this->logDebug('Returning decoded response contents.');
+            return json_decode($response->getBody()->getContents(), true);
+
+        }
+
+        throw new TransactionException($response);
+
+    }
+
+    /**
+     * Prepares the POST data to be sent
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function preparePostData(array $data)
+    {
+
+        // Add the API Key
+        $data['apiKey'] = $this->credentials->apiKey;
 
         // Sort the parameters
         ksort($data);
@@ -92,9 +123,7 @@ class GuzzleAdapter implements AdapterInterface
 
         // Create the sign-able string
         $signature = implode('&', array_map(
-            function ($value, $key) {
-                return "$key=$value";
-            },
+            function ($value, $key) { return "$key=$value"; },
             $data,
             array_keys($data)
         ));
@@ -102,26 +131,7 @@ class GuzzleAdapter implements AdapterInterface
         // Add the signed string
         $data['s'] = $this->sign($signature);
 
-        try {
-            $response = $this->client->post(
-                $this->flow->getEndpoint() . '/' . $endpoint,
-                ['form_params' => $data]
-            );
-        } catch (\Exception $exception) {
-            $this->logError("Error Sending transaction to $endpoint:\n". json_encode($original));
-            throw new AdapterException(json_encode($original), 0, $exception);
-        }
-
-        if ($response->getStatusCode() === 200) {
-
-            $this->logDebug('Response Code received: ' . $response->getStatusCode());
-            $this->logDebug('Returning decoded response contents.');
-            return json_decode($response->getBody()->getContents(), true);
-
-        }
-
-        throw new TransactionException($response);
-
+        return $data;
     }
 
     /**
@@ -134,23 +144,15 @@ class GuzzleAdapter implements AdapterInterface
 
         $original = $params;
 
-        // Add the API Key
-        $params['apiKey'] = $this->credentials->apiKey;
+        // Prepare the Parameters
+        $params = $this->prepareGetParams($params);
 
         // Log the Transactions
         $this->logInfo("Retrieving Resource from $endpoint:\n". json_encode($original));
 
-        // Sort the parameters
-        ksort($params);
-
-        // Create the signature with the parameters and the signature
-        $signature = '?' . ($params = http_build_query($params, null, '&')) . '&s=' . $this->sign($params);
-
-        $this->logDebug("Signature created: $signature");
-
         try {
             $response = $this->client->get(
-                $this->flow->getEndpoint() . '/' . $endpoint. $signature
+                $this->flow->getEndpoint() . '/' . $endpoint. $params
         );
         } catch (\Exception $exception) {
             $this->logError("Error Retrieving Resource from $endpoint:\n". json_encode($original));
@@ -158,12 +160,29 @@ class GuzzleAdapter implements AdapterInterface
         }
 
         if ($response->getStatusCode() === 200) {
-            $this->logDebug('Response Code received: ' . $response->getStatusCode());
             $this->logDebug('Returning decoded response contents.');
             return json_decode($response->getBody()->getContents(), true);
         }
 
         throw new TransactionException($response);
+    }
+
+    /**
+     * Prepares a GET parameters
+     *
+     * @param array $params
+     * @return string
+     */
+    protected function prepareGetParams(array $params)
+    {
+        // Add the API Key
+        $params['apiKey'] = $this->credentials->apiKey;
+
+        // Sort the parameters
+        ksort($params);
+
+        // Create the signature with the parameters and the signature
+        return '?' . ($params = http_build_query($params, null, '&')) . '&s=' . $this->sign($params);
     }
 
     /**

@@ -272,7 +272,10 @@ class Flow
     public function getWebhookWithSecret(string $key)
     {
         if ($webhook = $this->getWebhookUrls($key)) {
-            return $this->addWebhookSecret($webhook);
+            return $webhook . ($this->webhookSecret
+                ? (strpos($webhook, '?') ? '&' : '?') . 'secret=' . $this->webhookSecret
+                : ''
+            );
         };
 
         return null;
@@ -333,20 +336,6 @@ class Flow
         }
 
         throw new InvalidUrlException($url);
-    }
-
-    /**
-     * Adds a Webhook secret string if its set
-     *
-     * @param string $url
-     * @return string
-     */
-    protected function addWebhookSecret(string $url)
-    {
-        return $url . ($this->webhookSecret
-            ? (strpos($url, '?') ? '&' : '?') . 'secret=' . $this->webhookSecret
-            : ''
-        );
     }
 
     /*

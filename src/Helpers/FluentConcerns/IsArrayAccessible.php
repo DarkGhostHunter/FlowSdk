@@ -4,8 +4,6 @@ namespace DarkGhostHunter\FlowSdk\Helpers\FluentConcerns;
 
 trait IsArrayAccessible
 {
-
-
     /**
      * Whether a offset exists
      *

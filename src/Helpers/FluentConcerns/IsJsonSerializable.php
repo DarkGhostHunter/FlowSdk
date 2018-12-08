@@ -14,4 +14,14 @@ trait IsJsonSerializable
         return $this->toArray();
     }
 
+    /**
+     * Serializes the object to a JSON string
+     *
+     * @return string
+     */
+    public function toJson()
+    {
+        return json_encode($this->jsonSerialize());
+    }
+
 }
