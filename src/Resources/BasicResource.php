@@ -3,7 +3,6 @@
 namespace DarkGhostHunter\FlowSdk\Resources;
 
 use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
-use DarkGhostHunter\FlowSdk\Contracts\ResponseInterface;
 use DarkGhostHunter\FlowSdk\Contracts\ServiceInterface;
 use DarkGhostHunter\FlowSdk\Helpers\Fluent;
 use DarkGhostHunter\FlowSdk\Responses\BasicResponse;

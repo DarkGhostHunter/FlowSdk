@@ -1,7 +1,10 @@
 /vendor/
 composer.phar
 composer.lock
-examples
 .env.test
 .idea
 /build/
+
+/examples/
+/examples/.env
+/examples/logs

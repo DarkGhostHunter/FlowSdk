@@ -19,13 +19,17 @@ trait HasCrudOperations
     */
 
     /**
-     * @inheritdoc
+     * Commits the transaction into Flow, and returns a Response
+     *
+     * @param array $attributes
+     * @return \DarkGhostHunter\FlowSdk\Helpers\Fluent|BasicResponse
+     * @throws \Exception
      */
     public function commit(array $attributes)
     {
         if ($this->can('commit')) {
 
-            $this->flow->getLogger()->debug('Commiting Resource: ' . json_encode($attributes));
+            $this->flow->getLogger()->debug('Committing Resource: ' . json_encode($attributes));
 
             return BasicResponse::make(
                 $this->performCommit($attributes)
@@ -44,15 +48,17 @@ trait HasCrudOperations
     protected function performCommit(array $attributes, $options = null)
     {
         return $this->flow->getAdapter()->post(
-            $this->endpoint . '/' . $options['method'] ?? $this->verbsMap['commit'] ?? 'create',
+            $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['commit'] ?? 'create'),
             $attributes,
             $options
         );
     }
 
     /**
-     * @inheritdoc
-     * @throws \Exception
+     * Creates a Resource
+     *
+     * @param array $attributes
+     * @return mixed
      */
     public function create(array $attributes)
     {
@@ -68,7 +74,11 @@ trait HasCrudOperations
     }
 
     /**
-     * @inheritdoc
+     * Performs the Creation of the the Resource
+     *
+     * @param array $attributes
+     * @param array|null $options
+     * @return mixed
      */
     protected function performCreate(array $attributes, array $options = null)
     {
@@ -79,8 +89,11 @@ trait HasCrudOperations
     }
 
     /**
-     * @inheritdoc
-     * @throws \Exception
+     * Gets the Resource
+     *
+     * @param string $id
+     * @param null $options
+     * @return mixed
      */
     public function get(string $id, $options = null)
     {
@@ -94,7 +107,7 @@ trait HasCrudOperations
     }
 
     /**
-     * Performs the Retrieve action with the Flow Adapter
+     * Performs the retrieval of the resource
      *
      * @param string $key
      * @param string $id
@@ -110,7 +123,11 @@ trait HasCrudOperations
     }
 
     /**
-     * @inheritdoc
+     * Updates a Resource
+     *
+     * @param $id
+     * @param mixed ...$attributes
+     * @return mixed
      */
     public function update($id, ...$attributes)
     {
@@ -136,7 +153,7 @@ trait HasCrudOperations
     }
 
     /**
-     * Performs the Update action with the Flow Adapter
+     * Performs the Update of the resource
      *
      * @param array $attributes
      * @param array|null $options
@@ -151,7 +168,10 @@ trait HasCrudOperations
     }
 
     /**
-     * @inheritdoc
+     * Deletes a Resource
+     *
+     * @param string $id
+     * @return mixed
      */
     public function delete(string $id)
     {

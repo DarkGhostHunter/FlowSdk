@@ -37,7 +37,7 @@ class GuzzleAdapter implements AdapterInterface
     {
         $this->flow = $flow;
         $this->credentials = $flow->getCredentials();
-        $this->client = new Client($options);
+        $this->client = new Client($options ?? []);
     }
 
     /**
@@ -68,18 +68,33 @@ class GuzzleAdapter implements AdapterInterface
      */
     public function post(string $endpoint, array $data, $options = null) : array
     {
+
+        $original = $data;
+
         // Add the API Key
         $data['apiKey'] = $this->credentials->apiKey;
 
         // Log the Transactions
-        $this->logInfo("Sending Transaction to $endpoint: \n". json_encode($data));
+        $this->logInfo("Sending Transaction to $endpoint: \n". json_encode($original));
 
         // Sort the parameters
         ksort($data);
 
+        // Transform the Optional array as json if it's an array
+        if (is_array($data['optional'] ?? false)) {
+            $data['optional'] = json_encode($data['optional']);
+        }
+
+        // Transform the Optionals array as json if it's an array
+        if (is_array($data['optionals'] ?? false)) {
+            $data['optionals'] = json_encode($data['optionals']);
+        }
+
         // Create the sign-able string
         $signature = implode('&', array_map(
-            function ($value, $key) { return "$key=$value"; },
+            function ($value, $key) {
+                return "$key=$value";
+            },
             $data,
             array_keys($data)
         ));
@@ -88,10 +103,13 @@ class GuzzleAdapter implements AdapterInterface
         $data['s'] = $this->sign($signature);
 
         try {
-            $response = $this->client->post($endpoint, ['form_params' => $data]);
+            $response = $this->client->post(
+                $this->flow->getEndpoint() . '/' . $endpoint,
+                ['form_params' => $data]
+            );
         } catch (\Exception $exception) {
-            $this->logError("Error Sending transaction to $endpoint:\n". json_encode($data));
-            throw new AdapterException(json_encode($data), 0, $exception);
+            $this->logError("Error Sending transaction to $endpoint:\n". json_encode($original));
+            throw new AdapterException(json_encode($original), 0, $exception);
         }
 
         if ($response->getStatusCode() === 200) {
@@ -113,11 +131,14 @@ class GuzzleAdapter implements AdapterInterface
      */
     public function get(string $endpoint, array $params, array $options = null) : array
     {
+
+        $original = $params;
+
         // Add the API Key
         $params['apiKey'] = $this->credentials->apiKey;
 
         // Log the Transactions
-        $this->logInfo("Retrieving Resource from $endpoint:\n". json_encode($params));
+        $this->logInfo("Retrieving Resource from $endpoint:\n". json_encode($original));
 
         // Sort the parameters
         ksort($params);
@@ -128,10 +149,12 @@ class GuzzleAdapter implements AdapterInterface
         $this->logDebug("Signature created: $signature");
 
         try {
-            $response = $this->client->get($endpoint . $signature);
+            $response = $this->client->get(
+                $this->flow->getEndpoint() . '/' . $endpoint. $signature
+        );
         } catch (\Exception $exception) {
-            $this->logError("Error Retrieving Resource from $endpoint:\n". json_encode($params));
-            throw new AdapterException(json_encode($params), 0, $exception);
+            $this->logError("Error Retrieving Resource from $endpoint:\n". json_encode($original));
+            throw new AdapterException(json_encode($original), 0, $exception);
         }
 
         if ($response->getStatusCode() === 200) {

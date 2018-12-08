@@ -25,8 +25,8 @@ class Payment extends BaseService
      */
     protected $permittedActions = [
         'get'    => true,
-        'commit' => false,
-        'create' => true,
+        'commit' => true,
+        'create' => false,
         'update' => false,
         'delete' => false,
     ];
@@ -91,7 +91,7 @@ class Payment extends BaseService
      * @return BasicResponse
      * @throws \Exception
      */
-    public function createByEmail(array $attributes)
+    public function commitByEmail(array $attributes)
     {
         // Log Debug
         $this->flow->getLogger()->debug('Creating by Email: ' . json_encode($attributes));

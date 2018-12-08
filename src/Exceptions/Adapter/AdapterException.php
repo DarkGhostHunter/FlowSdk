@@ -17,6 +17,6 @@ class AdapterException extends Exception implements FlowSdkException
             $this->message .= "\nTransaction sent: $message";
         }
 
-        parent::__construct($message, $code, $previous);
+        parent::__construct($this->message, $code, $previous);
     }
 }

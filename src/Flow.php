@@ -267,13 +267,15 @@ class Flow
      * Gets a Webhook with the Secret if it's set
      *
      * @param string $key
-     * @return string
+     * @return string|null
      */
     public function getWebhookWithSecret(string $key)
     {
-        return $this->addWebhookSecret(
-            $this->getWebhookUrls($key)
-        );
+        if ($webhook = $this->getWebhookUrls($key)) {
+            return $this->addWebhookSecret($webhook);
+        };
+
+        return null;
     }
 
     /**
@@ -369,14 +371,14 @@ class Flow
             $logger ?? new NullLogger()
         );
 
+        // Set the credentials, or throw an Exception if there is none
+        $flow->setCredentials($credentials);
+
         // Set the default Guzzle Adapter
-        $flow->setAdapter(new GuzzleAdapter($flow, []));
+        $flow->setAdapter(new GuzzleAdapter($flow));
 
         // Set the production environment if set explicitly
         $flow->setProduction($environment === 'production');
-
-        // Set the credentials, or throw an Exception if there is none
-        $flow->setCredentials($credentials);
 
         // Return a new instance of Flow
         return $flow;
