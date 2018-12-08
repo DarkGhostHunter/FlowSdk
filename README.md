@@ -7,7 +7,7 @@ The simplest (and unofficial) SDK for Flow you will find.
 
 [Flow](https://www.flow.cl) is a chilean payment gateway that acts as a middleman for Webpay Plus, Onepay, Servipag, Multicaja and CryptoCompra.
 
-With Flow, you don't have to register in each service and comply with each of their SDK. Flow will be in charge of the money collection and delivering to your commerce, whatever payment method the customer uses (and you want to enable). 
+With Flow, you don't have to register in each service and comply with each of their SDK, APIs or contracts. Flow will be in charge of the money collection and delivering to your commerce, whatever payment method the customer uses (and you want to enable), through a single common interface.
 
 ## Requirements
 
