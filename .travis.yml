@@ -12,7 +12,7 @@ php:
 env:
   global:
     - CC_TEST_REPORTER_ID=dc7ede4f43f5fec6cd01a1587506c173ef844d68a6cff3c09a610e9da545af62
-    -
+
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
@@ -20,6 +20,7 @@ before_script:
 
 install:
   - composer install
+  - composer require php-coveralls/php-coveralls:2.1.* --dev
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
