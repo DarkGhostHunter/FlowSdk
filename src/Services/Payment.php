@@ -42,10 +42,17 @@ class Payment extends BaseService
      */
     protected function getDefaultsForResource(BasicResource $resource)
     {
-        return [
-            'urlConfirmation' => $this->flow->getWebhookWithSecret('payment.urlConfirmation'),
-            'urlReturn' => $this->flow->getReturnUrls('payment.urlReturn')
-        ];
+        $array = [];
+
+        if ($urlConfirmation = $this->flow->getWebhookWithSecret('payment.urlConfirmation')) {
+            $array['urlConfirmation'] = $urlConfirmation;
+        }
+
+        if ($urlReturn = $this->flow->getReturnUrls('payment.urlReturn')) {
+            $array['urlReturn'] = $urlReturn;
+        }
+
+        return empty($array) ? null : $array;
     }
 
 
