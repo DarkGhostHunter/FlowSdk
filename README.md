@@ -28,7 +28,7 @@ composer require darkghosthunter/flow-sdk
 
 If you don't have Composer, you need to [download `composer.phar`](https://getcomposer.org/composer.phar), and PHP manually if it's not available globally in your systems.
 
-Once you're done, download this package into your server (or your own computer), put the `composer.phar` file inside and let Composer download the required packages.
+Once you're done, download this package into your server (or your own computer) and put the `composer.phar` file inside. Then, let Composer download the required packages:
 
 ```bash
 cd /path/to/flow-sdk
@@ -52,7 +52,34 @@ include_once(__DIR__ . '/www/index.php');
 
 ## Usage
 
-[Refer to the Wiki](https://github.com/DarkGhostHunter/FlowSdk/wiki) for how to use this package.
+Flow SDK was made to be very expressive but straightforward. This code should tell what we are doing:
+
+```php
+<?php
+
+use DarkGhostHunter\FlowSdk\Flow;
+
+$flow = Flow::make('production', [
+    'apiKey'    => '1F90971E-8276-4713-97FF-2BLF5091EE3B',
+    'secret'    => 'f8b45f9b8bcdb5702dc86a1b894492303741c405',
+]);
+
+$paymentResponse = $flow->payment()->commit([
+    'commerceOrder'     => 'order#123',
+    'subject'           => 'Console',
+    'amount'            => 99990,
+    'email'             => 'johndoe@mail.com',
+    'urlConfirmation'   => 'https://myapp.com/flow/confirm',
+    'urlReturn'         => 'https://myapp.com/flow/return',
+    'optional'          => [
+        'Message' => 'Your order is being shipped!'
+    ]
+]);
+
+header('Location: '. $paymentResponse->getUrl());
+```
+
+Of course, you can do more than just payments. [Refer to the Wiki](https://github.com/DarkGhostHunter/FlowSdk/wiki) to see how to use all the services in detail.
 
 ## Extending
 
