@@ -18,7 +18,7 @@ With Flow, you don't have to register in each service and comply with each of th
 
 ## Install
 
-Install it in your project using Composer.
+Install it in your project using [Composer](https://getcomposer.org).
 
 ```bash
 composer require darkghosthunter/flow-sdk
@@ -26,7 +26,7 @@ composer require darkghosthunter/flow-sdk
 
 ### Manual installation
 
-If you don't have Composer, you need to download `composer.phar`, and PHP manually if it's not available globally in your systems.
+If you don't have Composer, you need to [download `composer.phar`](https://getcomposer.org/composer.phar), and PHP manually if it's not available globally in your systems.
 
 Once you're done, download this package into your server (or your own computer), put the `composer.phar` file inside and let Composer download the required packages.
 
