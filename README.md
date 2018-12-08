@@ -58,11 +58,7 @@ include_once(__DIR__ . '/www/index.php');
 
 This package uses [Semantic Versioning](https://semver.org/).
 
-Just issue a PR (Pull Request) with good code quality and all tests passed (or add new ones) for new functionality, bugs, cleaning or whatever.  
-
-## Roadmap
-
-Refer to the Project part of this package.
+Just issue a PR (Pull Request) with good code quality and all tests passed (or add new ones) for new functionality, bugs, cleaning or whatever.
 
 ## License
 
