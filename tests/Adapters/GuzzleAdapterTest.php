@@ -278,6 +278,41 @@ class GuzzleAdapterTest extends TestCase
         $this->mockClient->expects('post')->with(
             \Mockery::type('string'),
             \Mockery::on(function ($array) {
+                $required = ['apiKey', 'key', 'optional', 's'];
+                $hasRequired = count(array_intersect_key(array_flip($required), $array['form_params'])) === count($required);
+
+                $optionalsIsJson = is_string($array['form_params']['optional'])
+                    && !!json_decode($array['form_params']['optional']);
+
+                return $hasRequired && $optionalsIsJson;
+            })
+        )->andReturn(new Response(
+            200, [],
+            json_encode($array = ['foo', 'bar'])
+        ));
+
+        $response = $this->adapter->post('http://mockapp.com/post', [
+            'key' => 'value',
+            'optional' => [
+                'message' => 'must be json'
+            ]
+        ]);
+
+        $this->assertEquals($array, $response);
+    }
+
+    public function testSendsOptionalsArrayToJson()
+    {
+        $logger = \Mockery::instanceMock(LoggerInterface::class);
+        $logger->expects('info');
+        $logger->expects('debug');
+
+        $this->mockFlow->expects('getLogger')->andReturn($logger);
+        $this->mockFlow->expects('getEndpoint')->andReturn('http://flow.com/api');
+
+        $this->mockClient->expects('post')->with(
+            \Mockery::type('string'),
+            \Mockery::on(function ($array) {
                 $required = ['apiKey', 'key', 'optionals', 's'];
                 $hasRequired = count(array_intersect_key(array_flip($required), $array['form_params'])) === count($required);
 
