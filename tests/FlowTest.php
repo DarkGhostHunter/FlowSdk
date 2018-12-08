@@ -131,6 +131,14 @@ class FlowTest extends TestCase
         $this->assertEquals($urls, $this->flow->getWebhookUrls());
     }
 
+    public function testReturnsNullWebhookIfNotSet()
+    {
+        $this->flow->setWebhookSecret('customsecret');
+        $webhook = $this->flow->getWebhookWithSecret('payment.created');
+
+        $this->assertNull($webhook);
+    }
+
     public function testSetWebhookUrlsExceptionOnNoBaseUrl()
     {
         $this->expectException(\Exception::class);
