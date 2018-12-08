@@ -52,7 +52,7 @@ include_once(__DIR__ . '/www/index.php');
 
 ## Usage
 
-[Refer to the Wiki](wiki) for how to use this package.
+[Refer to the Wiki](https://github.com/DarkGhostHunter/FlowSdk/wiki) for how to use this package.
 
 ## Extending
 
