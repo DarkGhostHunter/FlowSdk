@@ -11,6 +11,10 @@ use JsonSerializable;
 
 class Fluent implements ArrayAccess, JsonSerializable, Countable
 {
+    use FluentConcerns\IsCountable,
+        FluentConcerns\IsArrayAccessible,
+        FluentConcerns\IsJsonSerializable;
+
     /**
      * Attributes
      *
@@ -218,60 +222,6 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
     }
 
     /**
-     * Whether a offset exists
-     *
-     * @param $offset
-     * @return boolean true on success or false on failure.
-     */
-    public function offsetExists($offset)
-    {
-        return $this->attributes[$offset] ?? false;
-    }
-
-    /**
-     * Offset to retrieve
-     *
-     * @param $offset
-     * @return mixed Can return all value types.
-     */
-    public function offsetGet($offset)
-    {
-        return $this->attributes[$offset] ?? null;
-    }
-
-    /**
-     * Offset to set
-     *
-     * @param $offset
-     * @param $value
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->attributes[$offset] = $value ?? null;
-    }
-
-    /**
-     * Offset to unset
-     *
-     * @param $offset
-     * @return void
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->attributes[$offset]);
-    }
-
-    /**
-     * Specify data which should be serialized to JSON
-     *
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
      * Transforms the object into an Array
      *
      * @return array
@@ -305,16 +255,6 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
     public function toJson()
     {
         return json_encode($this->jsonSerialize());
-    }
-
-    /**
-     * Count the attributes in the class
-     *
-     * @return int
-     */
-    public function count()
-    {
-        return count($this->toArray());
     }
 
     /**
