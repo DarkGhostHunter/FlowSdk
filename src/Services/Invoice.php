@@ -2,6 +2,7 @@
 
 namespace DarkGhostHunter\FlowSdk\Services;
 
+use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
 use DarkGhostHunter\FlowSdk\Resources\InvoiceResource;
 
 class Invoice extends BaseService
@@ -41,6 +42,24 @@ class Invoice extends BaseService
      * @var InvoiceResource
      */
     protected $resourceClass = InvoiceResource::class;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Existence
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Calculates the Resource existence based its attributes (or presence)
+     *
+     * @param ResourceInterface $resource
+     * @return bool
+     */
+    protected function calcResourceExistence(ResourceInterface $resource)
+    {
+        // The Invoice "doesn't exists" when its status is unpaid and "attemped" is "dont pay".
+        return !((int)$resource->status === 0) && ((int)$resource->attemped === 0);
+    }
 
     /*
     |--------------------------------------------------------------------------

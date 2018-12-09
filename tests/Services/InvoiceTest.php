@@ -29,6 +29,30 @@ class InvoiceTest extends TestCase
         $logger->expects('debug');
     }
 
+    public function testResourceExistenceFalse()
+    {
+        $this->mockAdapter->expects('get')->andReturn([
+            'attemped' => 1,
+            'status' => 1
+        ]);
+
+        $resource = $this->service->get('1');
+
+        $this->assertFalse($resource->exists());
+    }
+
+    public function testResourceExistenceTrue()
+    {
+        $this->mockAdapter->expects('get')->andReturn([
+            'attemped' => 0,
+            'status' => 1
+        ]);
+
+        $resource = $this->service->get('1');
+
+        $this->assertTrue($resource->exists());
+    }
+
     public function testCancel()
     {
         $this->mockAdapter->expects('post')->andReturns([

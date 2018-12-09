@@ -2,13 +2,15 @@
 
 namespace DarkGhostHunter\FlowSdk\Services;
 
+use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
 use DarkGhostHunter\FlowSdk\Resources\BasicResource;
 use DarkGhostHunter\FlowSdk\Resources\CustomerResource;
 use DarkGhostHunter\FlowSdk\Responses\BasicResponse;
 
 class Customer extends BaseService
 {
-    use Concerns\HasPagination;
+    use Concerns\HasCrudOperations,
+        Concerns\HasPagination;
 
     /**
      * Main identifier
@@ -16,15 +18,6 @@ class Customer extends BaseService
      * @var string
      */
     protected $id = 'customerId';
-
-    /**
-     * Change the default endpoint for the method for another
-     *
-     * @var array
-     */
-    protected $verbsMap = [
-        'get' => 'getStatus',
-    ];
 
     /**
      * Permitted actions of the Service Resources
@@ -35,8 +28,8 @@ class Customer extends BaseService
         'get'    => true,
         'commit' => false,
         'create' => true,
-        'update' => false,
-        'delete' => false,
+        'update' => true,
+        'delete' => true,
     ];
 
     /**
@@ -45,6 +38,23 @@ class Customer extends BaseService
      * @var \DarkGhostHunter\FlowSdk\Resources\CustomerResource
      */
     protected $resourceClass = CustomerResource::class;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Existence
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Calculates the Resource existence based its attributes (or presence)
+     *
+     * @param ResourceInterface $resource
+     * @return bool
+     */
+    protected function calcResourceExistence(ResourceInterface $resource)
+    {
+        return $resource->status !== 0;
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -89,13 +99,12 @@ class Customer extends BaseService
 
         $resource = $this->make(
             $this->flow->getAdapter()->get(
-                $this->endpoint, [
-                    'token' => $token
-                ]
+                $this->endpoint . '/getRegisterStatus',
+                ['token' => $token]
             )
         );
 
-        $resource->setExists($resource->status === 1);
+        $resource->setExists((int)$resource->status === 1);
 
         return $resource;
     }
@@ -115,9 +124,7 @@ class Customer extends BaseService
         return $this->make(
             $this->flow->getAdapter()->post(
                 $this->endpoint . '/unRegister',
-                [
-                    'customerId' => $customerId,
-                ]
+                ['customerId' => $customerId]
             )
         );
     }
@@ -137,9 +144,11 @@ class Customer extends BaseService
      */
     protected function makeCharge(array $attributes)
     {
-        $resource = $this->make($attributes);
+        $resource = new BasicResource($attributes);
 
         $resource->setType('charge');
+
+        $resource->setExists(in_array($resource->status, [1,2]));
 
         return $resource;
     }
@@ -201,7 +210,7 @@ class Customer extends BaseService
     {
         $pagedResponse = $this->getPage(
             $page,
-            array_merge($options, [
+            array_merge($options ?? [], [
                 'method' => 'getCharges',
                 'customerId' => $customerId
             ])

@@ -31,6 +31,36 @@ class PlanTest extends TestCase
         $logger->expects('debug');
     }
 
+    public function testResourceExistenceFalse()
+    {
+        $this->flow->expects('getWebhookWithSecret')
+            ->with('plan.urlCallback')
+            ->andReturn('https://app.com/plan/callback');
+
+        $this->adapter->expects('get')->andReturn([
+            'status' => 0
+        ]);
+
+        $resource = $this->service->get('1');
+
+        $this->assertFalse($resource->exists());
+    }
+
+    public function testResourceExistenceTrue()
+    {
+        $this->flow->expects('getWebhookWithSecret')
+            ->with('plan.urlCallback')
+            ->andReturn('https://app.com/plan/callback');
+
+        $this->adapter->expects('get')->andReturn([
+            'status' => 1
+        ]);
+
+        $resource = $this->service->get('1');
+
+        $this->assertTrue($resource->exists());
+    }
+
     public function testResourceHasDefaults()
     {
         $this->flow->expects('getWebhookWithSecret')
@@ -44,6 +74,22 @@ class PlanTest extends TestCase
         $this->assertInstanceOf(BasicResource::class, $resource);
         $this->assertEquals('bar', $resource->foo);
         $this->assertEquals('https://app.com/plan/callback', $resource->urlCallback);
+    }
+
+    public function testResourceDoesntHaveDefaults()
+    {
+        $this->flow->expects('getWebhookWithSecret')
+            ->with('plan.urlCallback')
+            ->andReturnNull();
+
+        $resource = $this->service->make([
+            'foo' => 'bar'
+        ]);
+
+        $this->assertInstanceOf(BasicResource::class, $resource);
+        $this->assertEquals('bar', $resource->foo);
+        $this->assertNull($resource->urlCallback);
+
     }
 
 }

@@ -121,13 +121,15 @@ class GuzzleAdapter implements AdapterInterface
             $data['optionals'] = json_encode($data['optionals']);
         }
 
+        // Filter any empty key
+        $data = array_filter($data, function($value) { return $value !== '' && $value !== null; } );
+
         // Create the sign-able string
         $signature = implode('&', array_map(
             function ($value, $key) { return "$key=$value"; },
             $data,
             array_keys($data)
         ));
-
         // Add the signed string
         $data['s'] = $this->sign($signature);
 
@@ -180,6 +182,9 @@ class GuzzleAdapter implements AdapterInterface
 
         // Sort the parameters
         ksort($params);
+
+        // Filter any empty key
+        $params = array_filter($params, function($value) { return $value !== '' && $value !== null; } );
 
         // Create the signature with the parameters and the signature
         return '?' . ($params = http_build_query($params, null, '&')) . '&s=' . $this->sign($params);

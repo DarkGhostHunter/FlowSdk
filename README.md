@@ -52,7 +52,7 @@ include_once(__DIR__ . '/www/index.php');
 
 ## Usage
 
-Flow SDK was made to be very expressive but straightforward. This code should tell what we are doing:
+Flow SDK was made to be very expressive but straightforward. This code should tell what we are doing without having to read the manual.
 
 ```php
 <?php
@@ -79,13 +79,17 @@ $paymentResponse = $flow->payment()->commit([
 header('Location: '. $paymentResponse->getUrl());
 ```
 
-Of course, you can do more than just payments. [Refer to the Wiki](https://github.com/DarkGhostHunter/FlowSdk/wiki) to see how to use all the services in detail.
+Of course, is always recommended to [RTFM](http://lmgtfy.com/?q=RTFM). [Refer to the Wiki](https://github.com/DarkGhostHunter/FlowSdk/wiki) to see how to use all the services in detail.
 
 ## Extending
 
 This package uses [Semantic Versioning](https://semver.org/).
 
 Just issue a PR (Pull Request) with good code quality and all tests passed (or add new ones) for new functionality, bugs, cleaning or whatever.
+
+## Examples
+
+If you're lost and what some kind of prototyping, or just want to know how a transaction process works, check the [`examples`](examples) directory.
 
 ## License
 

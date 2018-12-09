@@ -5,6 +5,5 @@ composer.lock
 .idea
 /build/
 
-/examples/
 /examples/.env
 /examples/logs

@@ -31,6 +31,29 @@ class CustomerTest extends TestCase
         $logger->expects('debug');
     }
 
+
+    public function testResourceExistenceFalse()
+    {
+        $this->adapter->expects('post')->andReturn([
+            'status' => 0
+        ]);
+
+        $resource = $this->service->create([]);
+
+        $this->assertFalse($resource->exists());
+    }
+
+    public function testResourceExistenceTrue()
+    {
+        $this->adapter->expects('post')->andReturn([
+            'status' => 1
+        ]);
+
+        $resource = $this->service->create([]);
+
+        $this->assertTrue($resource->exists());
+    }
+
     public function testReverseCharge()
     {
         $this->adapter->expects('post')->andReturn([

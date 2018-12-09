@@ -335,4 +335,6 @@ class GuzzleAdapterTest extends TestCase
 
         $this->assertEquals($array, $response);
     }
+
+    // TODO: Disposes of empty array key values
 }

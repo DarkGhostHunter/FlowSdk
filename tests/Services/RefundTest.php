@@ -45,4 +45,20 @@ class RefundTest extends TestCase
         $this->assertEquals('bar', $resource->foo);
         $this->assertEquals('https://app.com/refund/callback', $resource->urlCallBack);
     }
+
+    public function testResourceDoesntHaveDefaults()
+    {
+        $this->flow->expects('getWebhookWithSecret')
+            ->with('refund.urlCallBack')
+            ->andReturnNull();
+
+        $resource = $this->service->make([
+            'foo' => 'bar'
+        ]);
+
+        $this->assertInstanceOf(BasicResource::class, $resource);
+        $this->assertEquals('bar', $resource->foo);
+        $this->assertNull($resource->urlCallBack);
+
+    }
 }

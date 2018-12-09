@@ -3,7 +3,7 @@
   "description": "Unofficial PHP SDK for Flow, a chilean payment gateway.",
   "type": "library",
   "license": "MIT",
-  "version": "1.0.0-rc",
+  "version": "1.0.0",
   "authors": [
     {
       "name": "Italo Baeza C.",
@@ -16,12 +16,13 @@
     "docs": "https://www.flow.cl/docs/api.html",
     "email": "soporte@flow.cl"
   },
-  "minimum-stability": "rc",
+  "minimum-stability": "stable",
   "require": {
     "php": ">=7.1.3",
     "ext-json": "*",
     "ext-curl": "*",
     "ext-openssl": "*",
+    "psr/log": "^1.0.0",
     "guzzlehttp/guzzle": "6.3.*",
     "katzgrau/klogger": "1.2.*"
   },
