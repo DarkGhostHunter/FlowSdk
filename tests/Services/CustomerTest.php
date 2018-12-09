@@ -31,6 +31,29 @@ class CustomerTest extends TestCase
         $logger->expects('debug');
     }
 
+
+    public function testResourceExistenceFalse()
+    {
+        $this->adapter->expects('post')->andReturn([
+            'status' => 0
+        ]);
+
+        $resource = $this->service->create([]);
+
+        $this->assertFalse($resource->exists());
+    }
+
+    public function testResourceExistenceTrue()
+    {
+        $this->adapter->expects('post')->andReturn([
+            'status' => 1
+        ]);
+
+        $resource = $this->service->create([]);
+
+        $this->assertTrue($resource->exists());
+    }
+
     public function testReverseCharge()
     {
         $this->adapter->expects('post')->andReturn([
@@ -105,7 +128,7 @@ class CustomerTest extends TestCase
         ]);
 
         $this->assertInstanceOf(PagedResponse::class, $resource);
-        $this->assertIsArray($resource->items);
+        $this->assertInternalType('array', $resource->items);
         $this->assertCount(4, $resource->items);
         $this->assertInstanceOf(BasicResource::class, $resource->items[0]);
         $this->assertInstanceOf(BasicResource::class, $resource->items[1]);

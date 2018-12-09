@@ -1,34 +1,34 @@
-[![alt text](https://www.flow.cl/images/header/logo-flow.svg)](https://www.flow.cl)
-[![build status](https://travis-ci.com/darkghosthunter/flowsdk.svg?branch=master)](https://travis-ci.com/darkghosthunter/flowsdk)
+![alt text](https://www.flow.cl/images/header/logo-flow.svg)
+[![Build Status](https://travis-ci.com/DarkGhostHunter/FlowSdk.svg?branch=master)](https://travis-ci.com/DarkGhostHunter/FlowSdk) [![Coverage Status](https://coveralls.io/repos/github/DarkGhostHunter/FlowSdk/badge.svg?branch=master)](https://coveralls.io/github/DarkGhostHunter/FlowSdk?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/0138e0686180120e68c5/maintainability)](https://codeclimate.com/github/DarkGhostHunter/FlowSdk/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/0138e0686180120e68c5/test_coverage)](https://codeclimate.com/github/DarkGhostHunter/FlowSdk/test_coverage)
 
-# flow sdk 
+# Flow SDK 
 
-the simplest (and unofficial) sdk for flow you will find.
+The simplest (and unofficial) SDK for Flow you will find.
 
-[flow](https://www.flow.cl) is a chilean payment gateway that acts as a middleman for webpay plus, onepay, servipag, multicaja and cryptocompra.
+[Flow](https://www.flow.cl) is a chilean payment gateway that acts as a middleman for Webpay Plus, Onepay, Servipag, Multicaja and CryptoCompra.
 
-with flow, you don't have to register in each service and comply with each of their sdk. flow will be in charge of the money collection and delivering to your commerce, whatever payment method the customer uses (and you want to enable). 
+With Flow, you don't have to register in each service and comply with each of their SDK, APIs or contracts. Flow will be in charge of the money collection and delivering to your commerce, whatever payment method the customer uses (and you want to enable), through a single common interface.
 
-## requirements
+## Requirements
 
-* a [flow account](https://www.flow.cl/app/web/register.php)
-* php 7.1.3+
+* A [Flow account](https://www.flow.cl/app/web/register.php)
+* PHP 7.1.3+
 * ext-openssl
 * ext-curl
 
-## install
+## Install
 
-install it in your project using composer.
+Install it in your project using [Composer](https://getcomposer.org).
 
 ```bash
 composer require darkghosthunter/flow-sdk
 ```
 
-### manual installation
+### Manual installation
 
-if you don't have composer, you need to download `composer.phar`, and php manually if it's not available globally in your systems.
+If you don't have Composer, you need to [download `composer.phar`](https://getcomposer.org/composer.phar), and PHP manually if it's not available globally in your systems.
 
-once you're done, download this package into your server (or your own computer), put the `composer.phar` file inside and let composer download the required packages.
+Once you're done, download this package into your server (or your own computer) and put the `composer.phar` file inside. Then, let Composer download the required packages:
 
 ```bash
 cd /path/to/flow-sdk
@@ -36,36 +36,63 @@ cd /path/to/flow-sdk
 path/to/php composer.phar install --no-dev
 ```
 
-then load the package anywhere in your code calling the composer autoloader:
+Then load the package anywhere in your code calling the Composer autoloader:
 
 ```php
 <?php
 
-// load the flow sdk.
-include_once(__dir__ . '/path/to/flow-sdk/vendor/autoloader.php');
+// Load the Flow SDK.
+include_once(__DIR__ . '/path/to/flow-sdk/vendor/autoloader.php');
 
-// load my app
-include_once(__dir__ . '/www/index.php');
+// Load my app
+include_once(__DIR__ . '/www/index.php');
 ```
 
-> if you did this in your own computer, its recommended to zip the package and upload it to your server, and there use a web ui file manager and decompress it. uploading multiple files may take you a lot of minutes instead of just one.
+> If you did this in your own computer, its recommended to zip the package and upload it to your server, and there use a Web UI File Manager and decompress it. Uploading multiple files may take you a lot of minutes instead of just one.
 
-## usage
+## Usage
 
-[refer to the wiki](wiki) for how to use this package.
+Flow SDK was made to be very expressive but straightforward. This code should tell what we are doing without having to read the manual.
 
-## extending
+```php
+<?php
 
-this package uses [semantic versioning](https://semver.org/).
+use DarkGhostHunter\FlowSdk\Flow;
 
-just issue a pr (pull request) with good code quality and all tests passed (or add new ones) for new functionality, bugs, cleaning or whatever.  
+$flow = Flow::make('production', [
+    'apiKey'    => '1F90971E-8276-4713-97FF-2BLF5091EE3B',
+    'secret'    => 'f8b45f9b8bcdb5702dc86a1b894492303741c405',
+]);
 
-## roadmap
+$paymentResponse = $flow->payment()->commit([
+    'commerceOrder'     => 'order#123',
+    'subject'           => 'Console',
+    'amount'            => 99990,
+    'email'             => 'johndoe@mail.com',
+    'urlConfirmation'   => 'https://myapp.com/flow/confirm',
+    'urlReturn'         => 'https://myapp.com/flow/return',
+    'optional'          => [
+        'Message' => 'Your order is being shipped!'
+    ]
+]);
 
-refer to the project part of this package.
+header('Location: '. $paymentResponse->getUrl());
+```
 
-## license
+Of course, is always recommended to [RTFM](http://lmgtfy.com/?q=RTFM). [Refer to the Wiki](https://github.com/DarkGhostHunter/FlowSdk/wiki) to see how to use all the services in detail.
 
-this package is licenced by the [mit license](license).
+## Extending
 
-this package is not related in any way, directly or indirectly, to any of the services, companies, products and/or services referenced in this package.
+This package uses [Semantic Versioning](https://semver.org/).
+
+Just issue a PR (Pull Request) with good code quality and all tests passed (or add new ones) for new functionality, bugs, cleaning or whatever.
+
+## Examples
+
+If you're lost and what some kind of prototyping, or just want to know how a transaction process works, check the [`examples`](examples) directory.
+
+## License
+
+This package is licenced by the [MIT License](LICENSE).
+
+This package is not related in any way, directly or indirectly, to any of the services, companies, products and/or services referenced in this package.

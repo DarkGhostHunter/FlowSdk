@@ -7,7 +7,7 @@
         colors="true">
     <testsuites>
         <testsuite name="FlowSdk Test Suite">
-            <directory suffix="Test">tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
     <filter>
@@ -16,6 +16,6 @@
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-clover" target="clover.xml"/>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
 </phpunit>

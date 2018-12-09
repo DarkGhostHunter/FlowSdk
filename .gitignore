@@ -1,8 +1,9 @@
-logs
 /vendor/
+composer.phar
 composer.lock
-examples
 .env.test
 .idea
-composer.phar
-clover.xml
+/build/
+
+/examples/.env
+/examples/logs

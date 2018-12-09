@@ -18,7 +18,9 @@ class Settlement extends BaseService
      *
      * @var array
      */
-    protected $verbsMap = [];
+    protected $verbsMap = [
+        'get' => 'getById'
+    ];
 
     /**
      * Permitted actions of the Service Resources
@@ -56,7 +58,7 @@ class Settlement extends BaseService
                 'date',
                 $date,
                 [
-                    'method' => '/getByDate',
+                    'method' => 'getByDate',
                 ]
             )
         );

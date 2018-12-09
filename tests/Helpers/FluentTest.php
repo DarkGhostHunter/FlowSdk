@@ -2,6 +2,8 @@
 
 namespace Tests\Helpers;
 
+use DarkGhostHunter\FlowSdk\Exceptions\Fluent\AttributesOnlyException;
+use DarkGhostHunter\FlowSdk\Exceptions\Fluent\AttributesRequiredException;
 use DarkGhostHunter\FlowSdk\Helpers\Fluent;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +16,16 @@ class FluentTest extends TestCase
             'foo' => 'bar'
         ]);
 
+        unset($fluent->foo);
+
+        $this->assertEmpty($fluent->toArray());
+
+        $fluent = new Fluent([
+            'foo' => 'bar'
+        ]);
+
         unset($fluent['foo']);
+
 
         $this->assertEmpty($fluent->toArray());
     }
@@ -28,6 +39,7 @@ class FluentTest extends TestCase
             protected $hidden = ['hidden'];
         };
 
+        $this->assertEquals(['hidden'], $fluent->getHidden());
         $this->assertArrayNotHasKey('hidden', $fluent->toArray());
 
     }
@@ -41,6 +53,70 @@ class FluentTest extends TestCase
 
         $this->assertEquals('bar', $fluent->get('foo'));
         $this->assertEquals('isClosure', $fluent->get('closure'));
+        $this->assertEquals(
+            'closureReturnsString',
+            $fluent->get('absent', function() {
+                return 'closureReturnsString';
+            })
+        );
+    }
+
+    public function testAttributesRequired()
+    {
+        $fluent = new class([
+            'foo' => 'bar',
+            'key' => 'value'
+        ]) extends Fluent {
+            protected $required = [
+                'foo'
+            ];
+        };
+
+        $this->assertEquals('bar', $fluent->foo);
+        $this->assertEquals('value', $fluent->key);
+    }
+
+    public function testAttributesRequiredException()
+    {
+        $this->expectException(AttributesRequiredException::class);
+
+        $fluent = new class([
+            'foo' => 'bar',
+            'notKey' => 'value',
+        ]) extends Fluent {
+            protected $required = [
+                'key'
+            ];
+        };
+    }
+
+    public function testAttributesOnly()
+    {
+        $fluent = new class([
+            'foo' => 'bar',
+        ]) extends Fluent {
+            protected $required = [
+                'foo'
+            ];
+            protected $restrained = true;
+        };
+
+        $this->assertEquals('bar', $fluent->foo);
+    }
+
+    public function testAttributesOnlyException()
+    {
+        $this->expectException(AttributesOnlyException::class);
+
+        $fluent = new class([
+            'foo' => 'bar',
+            'key' => 'value',
+        ]) extends Fluent {
+            protected $required = [
+                'key'
+            ];
+            protected $restrained = true;
+        };
     }
 
     public function testOffsetSet()
@@ -49,6 +125,7 @@ class FluentTest extends TestCase
             'foo' => 'bar'
         ]);
 
+        $this->assertEquals('bar', $fluent['foo'] = 'bar');
         $this->assertEquals('bar', $fluent['foo']);
     }
 
@@ -77,7 +154,7 @@ class FluentTest extends TestCase
             'foo' => 'bar'
         ]);
 
-        $this->assertIsArray($fluent->toArray());
+        $this->assertInternalType('array', $fluent->toArray());
     }
 
     public function testGetMerge()
@@ -93,7 +170,9 @@ class FluentTest extends TestCase
             ];
         };
 
-        $this->assertIsArray($fluent->toArray());
+        $this->assertEquals(['toMerge'], $fluent->getMerge());
+
+        $this->assertInternalType('array', $fluent->toArray());
         $this->assertEquals([
             'key' => 'value',
             'foo' => 'notBar',
@@ -117,7 +196,7 @@ class FluentTest extends TestCase
 
         $fluent = Fluent::fromJson($string);
 
-        $this->assertIsString((string)$fluent);
+        $this->assertInternalType('string', (string)$fluent);
         $this->assertEquals(json_decode($string, true), $fluent->toArray());
     }
 
@@ -246,6 +325,7 @@ class FluentTest extends TestCase
         ]);
 
         $this->assertEquals($array, $fluent->getRawAttributes());
+        $this->assertEquals(['key' => 'value'], $fluent->getRawAttributes('key'));
 
     }
 

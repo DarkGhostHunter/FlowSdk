@@ -42,7 +42,7 @@ abstract class BaseService implements ServiceInterface
      *
      * @var array|null
      */
-    protected $editableAttributes = null;
+    protected $editableAttributes;
 
     /**
      * Permitted actions of the Service Resources

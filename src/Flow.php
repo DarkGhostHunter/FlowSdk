@@ -267,13 +267,18 @@ class Flow
      * Gets a Webhook with the Secret if it's set
      *
      * @param string $key
-     * @return string
+     * @return string|null
      */
     public function getWebhookWithSecret(string $key)
     {
-        return $this->addWebhookSecret(
-            $this->getWebhookUrls($key)
-        );
+        if ($webhook = $this->getWebhookUrls($key)) {
+            return $webhook . ($this->webhookSecret
+                ? (strpos($webhook, '?') ? '&' : '?') . 'secret=' . $this->webhookSecret
+                : ''
+            );
+        };
+
+        return null;
     }
 
     /**
@@ -333,20 +338,6 @@ class Flow
         throw new InvalidUrlException($url);
     }
 
-    /**
-     * Adds a Webhook secret string if its set
-     *
-     * @param string $url
-     * @return string
-     */
-    protected function addWebhookSecret(string $url)
-    {
-        return $url . ($this->webhookSecret
-            ? (strpos($url, '?') ? '&' : '?') . 'secret=' . $this->webhookSecret
-            : ''
-        );
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Static Helper
@@ -369,14 +360,14 @@ class Flow
             $logger ?? new NullLogger()
         );
 
+        // Set the credentials, or throw an Exception if there is none
+        $flow->setCredentials($credentials);
+
         // Set the default Guzzle Adapter
-        $flow->setAdapter(new GuzzleAdapter($flow, []));
+        $flow->setAdapter(new GuzzleAdapter($flow));
 
         // Set the production environment if set explicitly
         $flow->setProduction($environment === 'production');
-
-        // Set the credentials, or throw an Exception if there is none
-        $flow->setCredentials($credentials);
 
         // Return a new instance of Flow
         return $flow;
@@ -401,6 +392,8 @@ class Flow
             return $this->services[$name]
                 ?? $this->services[$name] = new $this->servicesMap[$name]($this);
         }
+
+        throw new \BadMethodCallException("Method $name does not exists");
     }
 
 }

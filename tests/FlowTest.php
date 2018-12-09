@@ -63,7 +63,7 @@ class FlowTest extends TestCase
             'card.urlReturn'        => 'https://app.com/card/return',
         ]);
 
-        $this->assertIsArray($this->flow->getReturnUrls());
+        $this->assertInternalType('array', $this->flow->getReturnUrls());
         $this->assertEquals($urls, $this->flow->getReturnUrls());
     }
 
@@ -71,7 +71,7 @@ class FlowTest extends TestCase
     {
         $this->flow->setReturnUrls($urls = [
             'payment.urlReturn'     => $return = 'https://app.com/payment/return',
-            'card.urlReturn'        => 'https://app.com/card/return',
+            'card.urlReturn'        => 'https://app.com',
         ]);
 
         $this->assertEquals($return, $this->flow->getReturnUrls('payment.urlReturn'));
@@ -91,7 +91,7 @@ class FlowTest extends TestCase
             'card.urlReturn'        => 'https://app.com/card/return',
         ];
 
-        $this->assertIsArray($this->flow->getReturnUrls());
+        $this->assertInternalType('array', $this->flow->getReturnUrls());
         $this->assertEquals($urls, $this->flow->getReturnUrls());
     }
 
@@ -113,7 +113,7 @@ class FlowTest extends TestCase
             'customer.registered'   => 'https://finances.app.com/webhooks/customer-registered',
         ];
 
-        $this->assertIsArray($this->flow->getWebhookUrls());
+        $this->assertInternalType('array', $this->flow->getWebhookUrls());
         $this->assertEquals($urls, $this->flow->getWebhookUrls());
     }
 
@@ -127,8 +127,16 @@ class FlowTest extends TestCase
             'customer.registered'   => 'https://finances.app.com/webhooks/customer-registered',
         ]);
 
-        $this->assertIsArray($this->flow->getWebhookUrls());
+        $this->assertInternalType('array', $this->flow->getWebhookUrls());
         $this->assertEquals($urls, $this->flow->getWebhookUrls());
+    }
+
+    public function testReturnsNullWebhookIfNotSet()
+    {
+        $this->flow->setWebhookSecret('customsecret');
+        $webhook = $this->flow->getWebhookWithSecret('payment.created');
+
+        $this->assertNull($webhook);
     }
 
     public function testSetWebhookUrlsExceptionOnNoBaseUrl()
@@ -183,7 +191,7 @@ class FlowTest extends TestCase
         $this->assertEquals($webhookUrls, $this->flow->getWebhookUrls());
 
         foreach ($webhookUrls as $key => $value) {
-            $this->assertStringContainsString($secret, $this->flow->getWebhookWithSecret($key));
+            $this->assertContains($secret, $this->flow->getWebhookWithSecret($key));
         }
 
     }
@@ -241,6 +249,13 @@ class FlowTest extends TestCase
         $this->flow->setAdapter(\Mockery::instanceMock(AdapterInterface::class));
 
         $this->assertInstanceOf(AdapterInterface::class, $this->flow->getAdapter());
+    }
+
+    public function testInvalidService()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $this->flow->invalidService();
     }
 
     public function testSettlement()

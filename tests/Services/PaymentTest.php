@@ -76,7 +76,7 @@ class PaymentTest extends TestCase
             'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
         ]);
 
-        $response = $this->service->createByEmail([
+        $response = $this->service->commitByEmail([
             'foo' => 'bar'
         ]);
 
@@ -96,7 +96,7 @@ class PaymentTest extends TestCase
             'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
         ]);
 
-        $response = $this->service->createByEmail([
+        $response = $this->service->commitByEmail([
             'foo' => 'bar'
         ]);
 
@@ -135,5 +135,27 @@ class PaymentTest extends TestCase
         $this->assertInstanceOf(BasicResource::class, $resource);
         $this->assertEquals('bar', $resource->foo);
 
+    }
+
+    public function testMakeWithoutDefaults()
+    {
+        $this->adapter->expects('post')->andReturn([
+            'url' => 'https://api.flow.cl/flow',
+            'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
+        ]);
+
+        $this->flow->expects('getWebhookWithSecret')
+            ->andReturnNull();
+
+        $this->flow->expects('getReturnUrls')
+            ->andReturnNull();
+
+        $response = $this->service->make([
+            'foo' => 'bar'
+        ]);
+
+        $this->assertInstanceOf(BasicResource::class, $response);
+        $this->assertNull($response->urlConfirmation);
+        $this->assertNull($response->urlReturn);
     }
 }

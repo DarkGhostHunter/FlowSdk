@@ -41,7 +41,7 @@ class BaseServiceTest extends TestCase
 
     public function testGetVerbsMap()
     {
-        $this->assertIsArray($this->service->getVerbsMap());
+        $this->assertInternalType('array', $this->service->getVerbsMap());
     }
 
     public function test__construct()
@@ -68,8 +68,8 @@ class BaseServiceTest extends TestCase
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertInstanceOf(ServiceInterface::class, $resource->getService());
-        $this->assertIsBool($resource->exists());
-        $this->assertStringContainsString('baseService', $resource->getType());
+        $this->assertInternalType('bool', $resource->exists());
+        $this->assertInternalType('string', $resource->getType());
     }
 
     public function testCan()

@@ -2,6 +2,8 @@
 
 namespace DarkGhostHunter\FlowSdk\Services;
 
+use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
+
 class Coupon extends BaseService
 {
     use Concerns\HasCrudOperations,
@@ -42,4 +44,22 @@ class Coupon extends BaseService
         'update' => true,
         'delete' => true,
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Existence
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Calculates the Resource existence based its attributes (or presence)
+     *
+     * @param ResourceInterface $resource
+     * @return bool
+     */
+    protected function calcResourceExistence(ResourceInterface $resource)
+    {
+        return !($resource->expires && strtotime($resource->expires < time()))
+            && (int)$resource->status !== 0;
+    }
 }

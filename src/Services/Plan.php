@@ -2,6 +2,7 @@
 
 namespace DarkGhostHunter\FlowSdk\Services;
 
+use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
 use DarkGhostHunter\FlowSdk\Resources\BasicResource;
 
 class Plan extends BaseService
@@ -54,8 +55,22 @@ class Plan extends BaseService
      */
     protected function getDefaultsForResource(BasicResource $resource)
     {
-        return [
-            'urlCallback' => $this->flow->getWebhookWithSecret('plan.urlCallback')
-        ];
+        if ($urlCallback = $this->flow->getWebhookWithSecret('plan.urlCallback')) {
+            return ['urlCallback' => $urlCallback ];
+        }
+
+        return ;
+    }
+
+    /**
+     * Calculates the Resource existence based its attributes (or presence)
+     *
+     * @param ResourceInterface $resource
+     * @return bool
+     */
+    protected function calcResourceExistence(ResourceInterface $resource)
+    {
+        // By default, the resource exists if its not null or false.
+        return (int)$resource->status === 1;
     }
 }

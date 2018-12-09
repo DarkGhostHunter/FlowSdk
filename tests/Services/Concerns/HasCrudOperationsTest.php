@@ -126,6 +126,32 @@ class HasCrudOperationsTest extends TestCase
         $this->assertInstanceOf(ResourceInterface::class, $resource);
     }
 
+    public function testUpdateWithOnly()
+    {
+        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
+        $this->mockAdapter->expects('post')
+            ->with(
+                \Mockery::type('string'),
+                [
+                    'token' => 'theResourceId',
+                    'foo' => 'bar',
+                ]
+            )
+            ->andReturn(['foo' => 'bar']);
+
+        $this->service->setEditableAttributes([
+            'foo'
+        ]);
+
+        $resource = $this->service->update('theResourceId', [
+            'foo' => 'bar',
+            'key' => 'value'
+        ]);
+
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
+        $this->assertNull($resource->key);
+    }
+
     public function testCantGet()
     {
         $this->expectException(\BadMethodCallException::class);

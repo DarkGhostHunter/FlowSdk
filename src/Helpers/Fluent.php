@@ -5,12 +5,16 @@ namespace DarkGhostHunter\FlowSdk\Helpers;
 use ArrayAccess;
 use Closure;
 use Countable;
-use DarkGhostHunter\FlowSdk\Exceptions\Flow\AttributesOnlyException;
-use DarkGhostHunter\FlowSdk\Exceptions\Transactions\AttributesRequiredException;
+use DarkGhostHunter\FlowSdk\Exceptions\Fluent\AttributesOnlyException;
+use DarkGhostHunter\FlowSdk\Exceptions\Fluent\AttributesRequiredException;
 use JsonSerializable;
 
 class Fluent implements ArrayAccess, JsonSerializable, Countable
 {
+    use FluentConcerns\IsCountable,
+        FluentConcerns\IsArrayAccessible,
+        FluentConcerns\IsJsonSerializable;
+
     /**
      * Attributes
      *
@@ -182,7 +186,7 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
     public function getRawAttributes(...$only)
     {
         return count($only)
-            ? array_intersect_key(array_flip($only), $this->attributes)
+            ? array_intersect_key($this->attributes, array_flip($only))
             : $this->attributes;
     }
 
@@ -218,60 +222,6 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
     }
 
     /**
-     * Whether a offset exists
-     *
-     * @param $offset
-     * @return boolean true on success or false on failure.
-     */
-    public function offsetExists($offset)
-    {
-        return $this->attributes[$offset] ?? false;
-    }
-
-    /**
-     * Offset to retrieve
-     *
-     * @param $offset
-     * @return mixed Can return all value types.
-     */
-    public function offsetGet($offset)
-    {
-        return $this->attributes[$offset] ?? null;
-    }
-
-    /**
-     * Offset to set
-     *
-     * @param $offset
-     * @param $value
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->attributes[$offset] = $value ?? null;
-    }
-
-    /**
-     * Offset to unset
-     *
-     * @param $offset
-     * @return void
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->attributes[$offset]);
-    }
-
-    /**
-     * Specify data which should be serialized to JSON
-     *
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
      * Transforms the object into an Array
      *
      * @return array
@@ -295,26 +245,6 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
 
         // Return the cleaned array
         return $array;
-    }
-
-    /**
-     * Serializes the object to a JSON string
-     *
-     * @return string
-     */
-    public function toJson()
-    {
-        return json_encode($this->jsonSerialize());
-    }
-
-    /**
-     * Count the attributes in the class
-     *
-     * @return int
-     */
-    public function count()
-    {
-        return count($this->toArray());
     }
 
     /**

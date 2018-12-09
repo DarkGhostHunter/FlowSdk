@@ -2,6 +2,7 @@
 
 namespace DarkGhostHunter\FlowSdk\Services;
 
+use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
 use DarkGhostHunter\FlowSdk\Resources\SubscriptionResource;
 
 class Subscription extends BaseService
@@ -44,6 +45,25 @@ class Subscription extends BaseService
         'update' => true,
         'delete' => false,
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Existence
+    |--------------------------------------------------------------------------
+    */
+
+
+    /**
+     * Calculates the Resource existence based its attributes (or presence)
+     *
+     * @param ResourceInterface $resource
+     * @return bool
+     */
+    protected function calcResourceExistence(ResourceInterface $resource)
+    {
+        // It exists if "cancelled at" is empty, or if is before now.
+        return ! ($resource->cancel_at && strtotime($resource->cancel_at) < time());
+    }
 
     /*
     |--------------------------------------------------------------------------

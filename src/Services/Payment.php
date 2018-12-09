@@ -25,8 +25,8 @@ class Payment extends BaseService
      */
     protected $permittedActions = [
         'get'    => true,
-        'commit' => false,
-        'create' => true,
+        'commit' => true,
+        'create' => false,
         'update' => false,
         'delete' => false,
     ];
@@ -42,10 +42,17 @@ class Payment extends BaseService
      */
     protected function getDefaultsForResource(BasicResource $resource)
     {
-        return [
-            'urlConfirmation' => $this->flow->getWebhookWithSecret('payment.urlConfirmation'),
-            'urlReturn' => $this->flow->getReturnUrls('payment.urlReturn')
-        ];
+        $array = [];
+
+        if ($urlConfirmation = $this->flow->getWebhookWithSecret('payment.urlConfirmation')) {
+            $array['urlConfirmation'] = $urlConfirmation;
+        }
+
+        if ($urlReturn = $this->flow->getReturnUrls('payment.urlReturn')) {
+            $array['urlReturn'] = $urlReturn;
+        }
+
+        return empty($array) ? null : $array;
     }
 
 
@@ -91,7 +98,7 @@ class Payment extends BaseService
      * @return BasicResponse
      * @throws \Exception
      */
-    public function createByEmail(array $attributes)
+    public function commitByEmail(array $attributes)
     {
         // Log Debug
         $this->flow->getLogger()->debug('Creating by Email: ' . json_encode($attributes));
