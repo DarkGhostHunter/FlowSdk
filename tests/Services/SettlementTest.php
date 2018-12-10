@@ -16,24 +16,24 @@ class SettlementTest extends TestCase
     protected $service;
 
     /** @var AdapterInterface|\Mockery\MockInterface */
-    protected $adapter;
+    protected $flow;
 
     protected function setUp()
     {
-        $this->service = new Settlement($flow = \Mockery::instanceMock(Flow::class));
+        $this->service = new Settlement($this->flow = \Mockery::instanceMock(Flow::class));
 
-        $flow->expects('getAdapter')->andReturn($this->adapter = \Mockery::instanceMock(AdapterInterface::class));
-
-        $flow->expects('getLogger')->andReturn($logger = \Mockery::instanceMock(LoggerInterface::class));
+        $this->flow->expects('getLogger')->andReturn($logger = \Mockery::instanceMock(LoggerInterface::class));
 
         $logger->expects('debug');
     }
 
     public function testGetByDate()
     {
-        $this->adapter->expects('get')->andReturn([
-            'foo' => 'bar',
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), ['date' => '1990-01-01'])
+            ->andReturn([
+                'foo' => 'bar',
+            ]);
 
         $resource = $this->service->getByDate('1990-01-01');
 

@@ -72,14 +72,12 @@ class GuzzleAdapterTest extends TestCase
             );
         });
 
-        $response = $this->adapter->post('endpoint/method', ['key' => 'value']);
+        $response = $this->adapter->post('https://flow.cl/api/endpoint/method', ['key' => 'value']);
 
         $this->assertArrayHasKey('url', $response);
         $this->assertEquals('https://flow.cl/api/endpoint/method', $response['url']);
         $this->assertEquals([
-            'apiKey' => 'apiKey',
             'key' => 'value',
-            's' => '389d3443316752387879959da16d579ac80e6a2d5f7f4422c0d8a2d50dd07c74'
         ], $response['params']['form_params']);
 
     }
@@ -147,18 +145,17 @@ class GuzzleAdapterTest extends TestCase
         });
 
         $response = $this->adapter->get(
-            'endpoint/method', [
+            'https://flow.cl/api/endpoint/method',
+            [
                 'foo' => 'bar'
             ]
         );
+
 
         $this->assertInternalType('array', $response);
         $this->assertArrayHasKey('foo', $response);
         $this->assertEquals('bar', $response['foo']);
         $this->assertContains('https://flow.cl/api/endpoint/method', $response['url']);
-        $this->assertContains('apiKey=apiKey', $response['url']);
-        $this->assertContains('foo=bar', $response['url']);
-        $this->assertContains('s=a5a6f48b749d656abaf396be8c49afd0e128950dd0cce2d64f38c56479736d2b', $response['url']);
 
     }
 
@@ -224,15 +221,6 @@ class GuzzleAdapterTest extends TestCase
         $this->assertEmpty($this->adapter->logInfo('sample message'));
     }
 
-    public function testSign()
-    {
-        $signature = hash_hmac('sha256', 'data', $secret = 'secret');
-
-        $sign = $this->adapter->sign('data');
-
-        $this->assertEquals($signature, $sign);
-    }
-
     public function testLogDebug()
     {
         $logger = \Mockery::instanceMock(LoggerInterface::class);
@@ -260,163 +248,5 @@ class GuzzleAdapterTest extends TestCase
         $this->assertInstanceOf(AdapterInterface::class, $adapter);
     }
 
-    public function testSendsOptionalsArrayToJson()
-    {
-        $logger = \Mockery::instanceMock(LoggerInterface::class);
-        $logger->expects('info');
-        $logger->expects('debug');
-
-        $this->mockFlow->expects('getLogger')->andReturn($logger);
-        $this->mockFlow->expects('getEndpoint')->andReturn('http://flow.com/api');
-
-        $this->mockClient->expects('post')->with(
-            \Mockery::type('string'),
-            \Mockery::type('array')
-        )->andReturnUsing(function ($url, $params) {
-            return new Response(
-                200, [],
-                json_encode(compact('url', 'params')
-                ));
-        });
-
-        $response = $this->adapter->post('http://mockapp.com/post', [
-            'key' => 'value',
-            'optionals' => [
-                'message' => 'must be json',
-                'may' => [
-                    'be' => 'multidimensional'
-                ]
-            ],
-            'optional' => [
-                'message' => 'also must be json',
-                'may' => [
-                    'be' => 'multidimensional'
-                ]
-            ]
-        ]);
-
-        $this->assertJson($response['params']['form_params']['optionals']);
-        $this->assertJson($response['params']['form_params']['optional']);
-    }
-
-    public function testPostDisposesOfEmptyKeys()
-    {
-
-        $logger = \Mockery::instanceMock(LoggerInterface::class);
-        $logger->expects('info');
-        $logger->expects('debug');
-
-        $this->mockFlow->expects('getLogger')->andReturn($logger);
-        $this->mockFlow->expects('getEndpoint')->andReturn('http://flow.com/api');
-
-        $this->mockClient->expects('post')->with(
-            \Mockery::type('string'),
-            \Mockery::type('array')
-        )->andReturnUsing(function ($url, $params) {
-            return new Response(
-                200, [],
-                json_encode(compact('url', 'params'))
-            );
-        });
-
-        $response = $this->adapter->post('endpoint/method', [
-            'key' => 'value',
-            'cullNull' => null,
-            'cullEmpty' => '',
-        ]);
-
-        $this->assertArrayNotHasKey('cullNull', $response['params']['form_params']);
-        $this->assertArrayNotHasKey('cullEmpty', $response);
-    }
-
-    public function testGetDisposesOfEmptyKeys()
-    {
-        $logger = \Mockery::instanceMock(LoggerInterface::class);
-        $logger->expects('info');
-        $logger->expects('debug');
-
-        $this->mockFlow->expects('getLogger')->andReturn($logger);
-        $this->mockFlow->expects('getEndpoint')->andReturn('http://flow.com/api');
-
-        $this->mockClient->expects('get')
-            ->andReturnUsing(function ($args) {
-                return new Response(
-                    200, [],
-                    json_encode(['string' => $args])
-                );
-            });
-
-        $response = $this->adapter->get('serviceEndpoint', [
-            'key' => 'value',
-            'cullNull' => null,
-            'cullEmpty' => '',
-        ]);
-
-        $this->assertContains('key=value', $response['string']);
-        $this->assertNotContains('cullNull', $response['string']);
-        $this->assertNotContains('cullEmpty', $response['string']);
-    }
-
-    public function testAddsWebhookSecretToAttributes()
-    {
-        $logger = \Mockery::instanceMock(LoggerInterface::class);
-        $logger->expects('info');
-        $logger->expects('debug');
-
-        $this->mockFlow->expects('getLogger')->andReturn($logger);
-        $this->mockFlow->expects('getEndpoint')->andReturn('http://flow.com/api');
-        $this->mockFlow->expects('getWebhookSecret')->andReturn('123456789');
-
-        $this->mockClient->expects('post')
-            ->andReturnUsing(function ($url, $params) {
-                return new Response(
-                    200, [],
-                    json_encode(
-                        ['url' => $url] + $params['form_params']
-                    )
-                );
-            });
-
-        $response = $this->adapter->post('serviceEndpoint', [
-            'urlConfirmation' => 'http://app.com/webhook/payment',
-            'urlCallBack' => 'http://app.com/index.php?webhook=payment',
-            'urlCallback' => 'http://app.com/webhook/card.php',
-        ]);
-
-        $this->assertEquals('http://app.com/webhook/payment?secret=123456789', $response['urlConfirmation']);
-        $this->assertEquals('http://app.com/index.php?webhook=payment&secret=123456789', $response['urlCallBack']);
-        $this->assertEquals('http://app.com/webhook/card.php?secret=123456789', $response['urlCallback']);
-    }
-
-    public function testDoesNotAddWebhookSecretIfHasSecret()
-    {
-        $logger = \Mockery::instanceMock(LoggerInterface::class);
-        $logger->expects('info');
-        $logger->expects('debug');
-
-        $this->mockFlow->expects('getLogger')->andReturn($logger);
-        $this->mockFlow->expects('getEndpoint')->andReturn('http://flow.com/api');
-        $this->mockFlow->expects('getWebhookSecret')->andReturn('123456789');
-
-        $this->mockClient->expects('post')
-            ->andReturnUsing(function ($url, $params) {
-                return new Response(
-                    200, [],
-                    json_encode(
-                        ['url' => $url] + $params['form_params']
-                    )
-                );
-            });
-
-        $response = $this->adapter->post('serviceEndpoint', [
-            'urlConfirmation' => 'http://app.com/webhook/payment?secret=123456789',
-            'urlCallBack' => 'http://app.com/index.php?webhook=payment&secret=123456789',
-            'urlCallback' => 'http://app.com/webhook/card.php?secret=123456789',
-        ]);
-
-        $this->assertEquals('http://app.com/webhook/payment?secret=123456789', $response['urlConfirmation']);
-        $this->assertEquals('http://app.com/index.php?webhook=payment&secret=123456789', $response['urlCallBack']);
-        $this->assertEquals('http://app.com/webhook/card.php?secret=123456789', $response['urlCallback']);
-    }
 
 }

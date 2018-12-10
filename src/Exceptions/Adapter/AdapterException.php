@@ -14,7 +14,7 @@ class AdapterException extends Exception implements FlowSdkException
     {
 
         if (!empty($message)) {
-            $this->message .= "\nTransaction sent: $message";
+            $this->message .= "\nTransaction data: $message";
         }
 
         parent::__construct($this->message, $code, $previous);

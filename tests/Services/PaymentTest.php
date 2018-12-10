@@ -38,7 +38,7 @@ class PaymentTest extends TestCase
         $this->flow->expects('getWebhookUrls')
             ->with('payment.urlConfirmation')
             ->andReturn(
-                $webhook = 'http://myapp.com/payment/webhook?secret=d6199909d0b5fdc22c9db625e4edf0d6'
+                $webhook = 'http://myapp.com/payment/webhook'
             );
 
         $this->flow->expects('getReturnUrls')
@@ -63,18 +63,23 @@ class PaymentTest extends TestCase
             ->with('payment.urlReturn')
             ->andReturnNull();
 
-        $resource = $this->service->make([]);
+        $resource = $this->service->make([
+            'foo' => 'bar'
+        ]);
 
         $this->assertNull($resource->urlConfirmation);
         $this->assertNull($resource->urlReturn);
+        $this->assertEquals('bar', $resource->foo);
     }
 
     public function testCreateByEmail()
     {
-        $this->adapter->expects('post')->andReturn([
-            'url' => 'https://api.flow.cl/flow',
-            'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), ['foo' => 'bar'])
+            ->andReturn([
+                'url' => 'https://api.flow.cl/flow',
+                'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
+            ]);
 
         $response = $this->service->commitByEmail([
             'foo' => 'bar'
@@ -91,10 +96,12 @@ class PaymentTest extends TestCase
 
     public function testGetByCommerceOrder()
     {
-        $this->adapter->expects('post')->andReturn([
-            'url' => 'https://api.flow.cl/flow',
-            'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), ['foo' => 'bar'])
+            ->andReturn([
+                'url' => 'https://api.flow.cl/flow',
+                'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
+            ]);
 
         $response = $this->service->commitByEmail([
             'foo' => 'bar'
@@ -111,19 +118,17 @@ class PaymentTest extends TestCase
 
     public function testGetByCommerceId()
     {
-        $this->adapter->expects('get')->andReturn([
-            'foo' => 'bar',
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), ['commerceId' => 'sf12377'])
+            ->andReturn([
+                'foo' => 'bar',
+            ]);
 
         $this->flow->expects('getWebhookUrls')
-            ->andReturn(
-                'http://app.com/webhook'
-            );
+            ->andReturn('http://app.com/webhook');
 
         $this->flow->expects('getReturnUrls')
-            ->andReturn(
-                'http://app.com/return'
-            );
+            ->andReturn('http://app.com/return');
 
         $resource = $this->service->getByCommerceOrder('sf12377');
 
@@ -139,11 +144,6 @@ class PaymentTest extends TestCase
 
     public function testMakeWithoutDefaults()
     {
-        $this->adapter->expects('post')->andReturn([
-            'url' => 'https://api.flow.cl/flow',
-            'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
-        ]);
-
         $this->flow->expects('getWebhookUrls')
             ->andReturnNull();
 

@@ -59,7 +59,7 @@ if ($_POST['refund'] ?? null) {
         <div class="form-group col-md-6">
             <label for="refundCommerceOrder">refundCommerceOrder</label>
             <input id="refundCommerceOrder" type="text" class="form-control" name="refund[refundCommerceOrder]"
-                   value="<?php echo 'commerceRefund#' . bin2hex(random_bytes(4)) ?>" required>
+                   value="<?php echo 'commerceRefund-' . bin2hex(random_bytes(4)) ?>" required>
             <small class="input-text text-black-50">The name of this refund order.</small>
         </div>
 

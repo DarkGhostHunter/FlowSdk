@@ -28,7 +28,7 @@ if ($_POST['payment'] ?? null) {
         <div class="form-group col-md-6">
             <label for="commerceOrder">commerceOrder</label>
             <input id="commerceOrder" type="text" class="form-control" name="payment[commerceOrder]"
-                   value="<?php echo 'commerceOrder#' . bin2hex(random_bytes(4)) ?>" required>
+                   value="<?php echo 'commerceOrder-' . bin2hex(random_bytes(4)) ?>" required>
             <small class="input-text text-black-50">We are making a random order string.</small>
         </div>
 

@@ -80,7 +80,8 @@ class Invoice extends BaseService
         $this->flow->getLogger()->debug("Cancelling Invoice $id");
 
         return $this->make(
-            $this->flow->getAdapter()->post(
+            $this->flow->send(
+                'post',
                 $this->endpoint . '/cancel',
                 [
                     $this->id => $id,

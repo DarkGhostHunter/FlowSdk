@@ -2,6 +2,7 @@
 
 namespace DarkGhostHunter\FlowSdk;
 
+use DarkGhostHunter\FlowSdk\Adapters\Processor;
 use DarkGhostHunter\FlowSdk\Adapters\GuzzleAdapter;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
@@ -318,6 +319,38 @@ class Flow
         }
 
         throw new InvalidUrlException($url);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Request
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Processes the data to send, and passes it to the adapter
+     *
+     * @param string $method
+     * @param string $endpoint
+     * @param array|null $parameters
+     * @return array
+     */
+    public function send(string $method, string $endpoint, array $parameters = null)
+    {
+        /** @var string|array $parameters */
+        $data = (new Processor($this))->prepare($method, $parameters);
+
+        switch ($method) {
+            case 'get':
+                return $this->adapter->get(
+                    $this->getEndpoint() . '/' . trim($endpoint, '/') . trim($data, '/')
+                );
+            case 'post':
+                return $this->adapter->post(
+                    $this->getEndpoint() . '/' . trim($endpoint, '/'),
+                    $data ?? []
+                );
+        }
     }
 
     /*

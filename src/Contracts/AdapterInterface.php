@@ -36,28 +36,18 @@ interface AdapterInterface
      *
      * @param string $endpoint
      * @param array $data
-     * @param array $options
      * @return array
      */
-    public function post(string $endpoint, array $data, $options = null) : array;
+    public function post(string $endpoint, array $data) : array;
 
     /**
      * Issues a HTTP GET Request to Flow API
      *
      * @param string $endpoint
-     * @param array $params
-     * @param array $options
      * @return array
      */
-    public function get(string $endpoint, array $params, array $options = null) : array;
+    public function get(string $endpoint) : array;
 
-    /**
-     * Signs a HTTP POST or GET Request for Flow API
-     *
-     * @param string $data
-     * @return array|string
-     */
-    public function sign(string $data);
 
     /**
      * Logs informative process

@@ -17,26 +17,25 @@ class CustomerTest extends TestCase
     /** @var Customer */
     protected $service;
 
-    /** @var AdapterInterface|\Mockery\MockInterface */
-    protected $adapter;
+    /** @var Flow|\Mockery\MockInterface */
+    protected $flow;
 
     protected function setUp()
     {
-        $this->service = new Customer($flow = \Mockery::instanceMock(Flow::class));
+        $this->service = new Customer($this->flow = \Mockery::instanceMock(Flow::class));
 
-        $flow->expects('getAdapter')->andReturn($this->adapter = \Mockery::instanceMock(AdapterInterface::class));
-
-        $flow->expects('getLogger')->andReturn($logger = \Mockery::instanceMock(LoggerInterface::class));
+        $this->flow->expects('getLogger')->andReturn($logger = \Mockery::instanceMock(LoggerInterface::class));
 
         $logger->expects('debug');
     }
 
-
     public function testResourceExistenceFalse()
     {
-        $this->adapter->expects('post')->andReturn([
-            'status' => 0
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), \Mockery::type('array'))
+            ->andReturn([
+                'status' => 0
+            ]);
 
         $resource = $this->service->create([]);
 
@@ -45,21 +44,27 @@ class CustomerTest extends TestCase
 
     public function testResourceExistenceTrue()
     {
-        $this->adapter->expects('post')->andReturn([
-            'status' => 1
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), ['foo' => 'bar'])
+            ->andReturn([
+                'status' => 1
+            ]);
 
-        $resource = $this->service->create([]);
+        $resource = $this->service->create([
+            'foo' => 'bar'
+        ]);
 
         $this->assertTrue($resource->exists());
     }
 
     public function testReverseCharge()
     {
-        $this->adapter->expects('post')->andReturn([
-            'status' => '1',
-            'message' => 'Reverse charge was successful',
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), ['commerceTrxId' => 'chargeId'])
+            ->andReturn([
+                'status' => '1',
+                'message' => 'Reverse charge was successful',
+            ]);
 
         $response = $this->service->reverseCharge('commerceTrxId', 'chargeId');
 
@@ -69,12 +74,14 @@ class CustomerTest extends TestCase
 
     public function testGetCard()
     {
-        $this->adapter->expects('get')->andReturn([
-            'status' => '1',
-            'customerId' => 'cus_onoolldvec',
-            'creditCardType' => 'Visa',
-            'last4CardDigits' => '0366',
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), ['token' => 'token'])
+            ->andReturn([
+                'status' => '1',
+                'customerId' => 'cus_onoolldvec',
+                'creditCardType' => 'Visa',
+                'last4CardDigits' => '0366',
+            ]);
 
         $resource = $this->service->getCard('token');
 
@@ -84,10 +91,15 @@ class CustomerTest extends TestCase
 
     public function testRegisterCard()
     {
-        $this->adapter->expects('post')->andReturn([
-            'url' => $url = 'https://www.flow.cl/app/webpay/disclaimer.php',
-            'token' => $token = '41097C28B5BD78C77F589FE4BC59E18AC333F9EU',
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), [
+                'customerId' => 'customerId',
+                'url_return' => 'urlReturn',
+            ])
+            ->andReturn([
+                'url' => $url = 'https://www.flow.cl/app/webpay/disclaimer.php',
+                'token' => $token = '41097C28B5BD78C77F589FE4BC59E18AC333F9EU',
+            ]);
 
         $response = $this->service->registerCard('customerId', 'urlReturn');
 
@@ -100,11 +112,13 @@ class CustomerTest extends TestCase
 
     public function testUnregisterCard()
     {
-        $this->adapter->expects('post')->andReturn([
-            'foo' => 'bar',
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), ['customerId' => 'theCustomerId'])
+            ->andReturn([
+                'foo' => 'bar',
+            ]);
 
-        $resource = $this->service->unregisterCard('customerId');
+        $resource = $this->service->unregisterCard('theCustomerId');
 
         $this->assertInstanceOf(CustomerResource::class, $resource);
         $this->assertEquals('bar', $resource->foo);
@@ -112,14 +126,23 @@ class CustomerTest extends TestCase
 
     public function testGetChargesPage()
     {
-        $this->adapter->expects('get')->andReturn([
-            'total' => 200,
-            'hasMore' => 1,
-            'data' => [
-                ['item' => 1], ['item' => 2],
-                ['item' => 3], ['item' => 4]
-            ]
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), [
+                'start' => 0,
+                'limit' => 10,
+                'filter' => 'filtered',
+                'fromDate' => '1990-01-01',
+                'status' => 'status',
+                'customerId' => 'customerId'
+            ])
+            ->andReturn([
+                'total' => 200,
+                'hasMore' => 1,
+                'data' => [
+                    ['item' => 1], ['item' => 2],
+                    ['item' => 3], ['item' => 4]
+                ]
+            ]);
 
         $resource = $this->service->getChargesPage('customerId', 1, [
             'filter' => 'filtered',
@@ -138,9 +161,11 @@ class CustomerTest extends TestCase
 
     public function testCharge()
     {
-        $this->adapter->expects('post')->andReturn([
-            'foo' => 'bar'
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), ['foo' => 'bar'])
+            ->andReturn([
+                'foo' => 'bar'
+            ]);
 
         $resource = $this->service->createCharge([
             'foo' => 'bar'

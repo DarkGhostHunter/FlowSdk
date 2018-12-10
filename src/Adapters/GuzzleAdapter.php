@@ -66,24 +66,21 @@ class GuzzleAdapter implements AdapterInterface
      * @throws TransactionException
      * @throws AdapterException
      */
-    public function post(string $endpoint, array $data, $options = null): array
+    public function post(string $endpoint, array $data): array
     {
 
-        $original = $data;
-
-        $data = $this->preparePostData($data);
+        $path = parse_url($endpoint, PHP_URL_PATH);
 
         // Log the Transactions
-        $this->logInfo("Sending Transaction to $endpoint: \n" . json_encode($original));
+        $this->logInfo("Sending Transaction to $path: \n" . json_encode($data));
 
         try {
             $response = $this->client->post(
-                $this->flow->getEndpoint() . '/' . $endpoint,
-                ['form_params' => $data]
+                $endpoint, ['form_params' => $data]
             );
         } catch (\Exception $exception) {
-            $this->logError("Error Sending transaction to $endpoint:\n" . json_encode($original));
-            throw new AdapterException(json_encode($original), 0, $exception);
+            $this->logError("Error Sending transaction to $path:\n" . json_encode($data));
+            throw new AdapterException($path, 0, $exception);
         }
 
         if ($response->getStatusCode() === 200) {
@@ -94,81 +91,6 @@ class GuzzleAdapter implements AdapterInterface
 
         throw new TransactionException($response);
 
-    }
-
-    /**
-     * Prepares the POST data to be sent
-     *
-     * @param array $data
-     * @return array
-     */
-    protected function preparePostData(array $data)
-    {
-        // Add the API Key
-        $data['apiKey'] = $this->credentials->apiKey;
-
-        // Sort the parameters
-        ksort($data);
-
-        // Transform the Optional array as json if it's an array
-        if (is_array($data['optional'] ?? false)) {
-            $data['optional'] = json_encode($data['optional']);
-        }
-
-        // Transform the Optionals array as json if it's an array
-        if (is_array($data['optionals'] ?? false)) {
-            $data['optionals'] = json_encode($data['optionals']);
-        }
-
-        // Filter any empty key
-        $data = array_filter($data, function ($value) {
-            return $value !== '' && $value !== null;
-        });
-
-        // Add the Webhook Secret
-        $data = $this->addWebhookSecret($data);
-
-        // Create the sign-able string
-        $signature = implode('&', array_map(
-            function ($value, $key) {
-                return "$key=$value";
-            },
-            $data,
-            array_keys($data)
-        ));
-
-        // Add the signed string
-        $data['s'] = $this->sign($signature);
-
-        return $data;
-    }
-
-    /**
-     * Add the Webhook secret to the Webhook URL attribute
-     *
-     * @param array $attributes
-     * @return array
-     */
-    protected function addWebhookSecret(array $attributes)
-    {
-        $webhooks = array_intersect_key(
-            $attributes,
-            array_flip([
-                'urlConfirmation', 'urlCallBack', 'urlCallback',
-            ])
-        );
-
-        foreach ($webhooks as &$webhook) {
-            // Append the secret only if the URL doesn't have the "secret" key or value.
-            if (!strpos($webhook, 'secret') && !strpos($webhook, $secret = $this->flow->getWebhookSecret())) {
-                $webhook = $webhook .
-                    (strpos($webhook, '?') ? '&' : '?') .
-                    'secret=' . $this->flow->getWebhookSecret();
-            }
-        }
-
-        // Merge the attributes and return them
-        return array_merge($attributes, $webhooks);
     }
 
     /**
@@ -176,24 +98,19 @@ class GuzzleAdapter implements AdapterInterface
      * @throws AdapterException
      * @throws TransactionException
      */
-    public function get(string $endpoint, array $params, array $options = null): array
+    public function get(string $endpoint): array
     {
 
-        $original = $params;
-
-        // Prepare the Parameters
-        $params = $this->prepareGetParams($params);
+        $path = parse_url($endpoint, PHP_URL_PATH);
 
         // Log the Transactions
-        $this->logInfo("Retrieving Resource from $endpoint:\n" . json_encode($original));
+        $this->logInfo("Retrieving Resource from '$path'.");
 
         try {
-            $response = $this->client->get(
-                $this->flow->getEndpoint() . '/' . $endpoint . $params
-            );
+            $response = $this->client->get($endpoint);
         } catch (\Exception $exception) {
-            $this->logError("Error Retrieving Resource from $endpoint:\n" . json_encode($original));
-            throw new AdapterException(json_encode($original), 0, $exception);
+            $this->logError("Error Retrieving Resource from '$path' with " . parse_url($endpoint, PHP_URL_QUERY) . '.');
+            throw new AdapterException($endpoint, 0, $exception);
         }
 
         if ($response->getStatusCode() === 200) {
@@ -202,37 +119,6 @@ class GuzzleAdapter implements AdapterInterface
         }
 
         throw new TransactionException($response);
-    }
-
-    /**
-     * Prepares a GET parameters
-     *
-     * @param array $params
-     * @return string
-     */
-    protected function prepareGetParams(array $params)
-    {
-        // Add the API Key
-        $params['apiKey'] = $this->credentials->apiKey;
-
-        // Sort the parameters
-        ksort($params);
-
-        // Filter any empty key
-        $params = array_filter($params, function ($value) {
-            return $value !== '' && $value !== null;
-        });
-
-        // Create the signature with the parameters and the signature
-        return '?' . ($params = http_build_query($params, null, '&')) . '&s=' . $this->sign($params);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function sign(string $data)
-    {
-        return hash_hmac('sha256', $data, $this->credentials->secret);
     }
 
     /**

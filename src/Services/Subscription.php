@@ -85,7 +85,8 @@ class Subscription extends BaseService
         $this->flow->getLogger()->debug("Cancelling Subscription $id" . ($atPeriodEnd ? ' at period end.' : '.'));
 
         return $this->make(
-            $this->flow->getAdapter()->post(
+            $this->flow->send(
+                'post',
                 $this->endpoint . '/cancel',
                 [
                     'subscriptionId' => $id,
@@ -109,7 +110,8 @@ class Subscription extends BaseService
         $this->flow->getLogger()->debug("Adding Coupon $couponId to $subscriptionId");
 
         return $this->make(
-            $this->flow->getAdapter()->post(
+            $this->flow->send(
+                'post',
                 $this->endpoint . '/addCoupon',
                 [
                     'subscriptionId' => $subscriptionId,
@@ -132,7 +134,8 @@ class Subscription extends BaseService
         $this->flow->getLogger()->debug("Removing Coupons from $subscriptionId");
 
         return $this->make(
-            $this->flow->getAdapter()->post(
+            $this->flow->send(
+                'post',
                 $this->endpoint . '/deleteCoupon',
                 [
                     'subscriptionId' => $subscriptionId,
