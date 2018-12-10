@@ -2,11 +2,11 @@
 
 namespace DarkGhostHunter\FlowSdk;
 
-use DarkGhostHunter\FlowSdk\Adapters\Processor;
-use DarkGhostHunter\FlowSdk\Adapters\GuzzleAdapter;
+use DarkGhostHunter\FlowSdk\Helpers\Fluent;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\FlowSdk\Adapters\Processor;
+use DarkGhostHunter\FlowSdk\Adapters\GuzzleAdapter;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -142,21 +142,14 @@ class Flow
     /**
      * If Flow is using Production Environment
      *
+     * @param bool|null $isProduction
      * @return string
      */
-    public function isProduction()
+    public function isProduction(bool $isProduction = null)
     {
-        return $this->isProduction;
-    }
-
-    /**
-     * Set Flow Environment to production
-     *
-     * @param bool $isProduction
-     */
-    public function setProduction(bool $isProduction)
-    {
-        $this->isProduction = $isProduction;
+        return $isProduction === null
+            ? $this->isProduction
+            : $this->isProduction = $isProduction;
     }
 
     /**
@@ -233,16 +226,6 @@ class Flow
     }
 
     /**
-     * Get the Processor
-     *
-     * @return Processor
-     */
-    public function getProcessor()
-    {
-        return $this->processor;
-    }
-
-    /**
      * Set the Processor
      *
      * @param Processor $processor
@@ -273,11 +256,9 @@ class Flow
      */
     public function setReturnUrls(array $returnUrls)
     {
-        foreach ($returnUrls as &$returnUrl) {
-            $returnUrl = $this->parseUrl($returnUrl);
+        foreach ($returnUrls as $key => $returnUrl) {
+            $this->returnUrls[$key] = $this->parseUrl($returnUrl);
         }
-
-        $this->returnUrls = $returnUrls;
     }
 
     /**
@@ -301,11 +282,9 @@ class Flow
      */
     public function setWebhookUrls(array $webhookUrls)
     {
-        foreach ($webhookUrls as &$webhookUrl) {
-            $webhookUrl = $this->parseUrl($webhookUrl);
+        foreach ($webhookUrls as $key => $webhookUrl) {
+            $this->webhookUrls[$key] = $this->parseUrl($webhookUrl);
         }
-
-        $this->webhookUrls = $webhookUrls;
     }
 
     /**
