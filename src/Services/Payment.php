@@ -44,7 +44,7 @@ class Payment extends BaseService
     {
         $array = [];
 
-        if ($urlConfirmation = $this->flow->getWebhookWithSecret('payment.urlConfirmation')) {
+        if ($urlConfirmation = $this->flow->getWebhookUrls('payment.urlConfirmation')) {
             $array['urlConfirmation'] = $urlConfirmation;
         }
 

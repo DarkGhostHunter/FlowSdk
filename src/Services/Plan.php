@@ -55,7 +55,7 @@ class Plan extends BaseService
      */
     protected function getDefaultsForResource(BasicResource $resource)
     {
-        if ($urlCallback = $this->flow->getWebhookWithSecret('plan.urlCallback')) {
+        if ($urlCallback = $this->flow->getWebhookUrls('plan.urlCallback')) {
             return ['urlCallback' => $urlCallback ];
         }
 

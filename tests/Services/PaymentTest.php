@@ -35,7 +35,7 @@ class PaymentTest extends TestCase
 
     public function testPaymentHasDefaultReturnAndWebhookUrls()
     {
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->with('payment.urlConfirmation')
             ->andReturn(
                 $webhook = 'http://myapp.com/payment/webhook?secret=d6199909d0b5fdc22c9db625e4edf0d6'
@@ -55,7 +55,7 @@ class PaymentTest extends TestCase
 
     public function testPaymentDoesNotHaveDefaultReturnAndWebhookUrls()
     {
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->with('payment.urlConfirmation')
             ->andReturnNull();
 
@@ -115,9 +115,9 @@ class PaymentTest extends TestCase
             'foo' => 'bar',
         ]);
 
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->andReturn(
-                'http://app.com/webhook?secret=d6199909d0b5fdc22c9db625e4edf0d6'
+                'http://app.com/webhook'
             );
 
         $this->flow->expects('getReturnUrls')
@@ -144,7 +144,7 @@ class PaymentTest extends TestCase
             'token' => '33373581FC32576FAF33C46FC6454B1FFEBD7E1H',
         ]);
 
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->andReturnNull();
 
         $this->flow->expects('getReturnUrls')

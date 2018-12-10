@@ -264,24 +264,6 @@ class Flow
     }
 
     /**
-     * Gets a Webhook with the Secret if it's set
-     *
-     * @param string $key
-     * @return string|null
-     */
-    public function getWebhookWithSecret(string $key)
-    {
-        if ($webhook = $this->getWebhookUrls($key)) {
-            return $webhook . ($this->webhookSecret
-                ? (strpos($webhook, '?') ? '&' : '?') . 'secret=' . $this->webhookSecret
-                : ''
-            );
-        };
-
-        return null;
-    }
-
-    /**
      * Set the Webhook URLs
      *
      * @param array $webhookUrls

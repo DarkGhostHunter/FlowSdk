@@ -41,7 +41,7 @@ class Refund extends BaseService
      */
     protected function getDefaultsForResource(BasicResource $resource)
     {
-        if ($urlCallBack = $this->flow->getWebhookWithSecret('refund.urlCallBack')) {
+        if ($urlCallBack = $this->flow->getWebhookUrls('refund.urlCallBack')) {
             return [ 'urlCallBack' => $urlCallBack ];
         }
 

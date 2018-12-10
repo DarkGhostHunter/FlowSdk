@@ -133,8 +133,7 @@ class FlowTest extends TestCase
 
     public function testReturnsNullWebhookIfNotSet()
     {
-        $this->flow->setWebhookSecret('customsecret');
-        $webhook = $this->flow->getWebhookWithSecret('payment.created');
+        $webhook = $this->flow->getWebhookUrls('payment.created');
 
         $this->assertNull($webhook);
     }
@@ -164,36 +163,6 @@ class FlowTest extends TestCase
         $this->flow->setWebhookSecret($secret = bin2hex(random_bytes(16)));
 
         $this->assertEquals($secret, $this->flow->getWebhookSecret());
-    }
-
-    public function testWebhookSecretAppendsToUrls()
-    {
-        $this->flow->setWebhookSecret($secret = bin2hex(random_bytes(16)));
-
-        $this->flow->setReturnUrls($returnUrls = [
-            'payment.urlReturn'     => 'https://app.com/payment/return',
-            'card.urlReturn'        => 'https://app.com/index.php?site=card-return',
-        ]);
-
-        $this->flow->setWebhookUrls($webhookUrls = [
-            'payment.created'       => 'https://app.com/webhooks/payment-created/',
-            'payment.createdEmail'  => 'https://app.com/index.php?site=payment-email-created',
-            'plan.subscribed'       => 'https://app.com/webhooks/plan-subscribed/',
-            'refund.created'        => 'https://app.com/webhooks/refund-created',
-            'customer.registered'   => 'https://finances.app.com/webhooks/customer-registered',
-        ]);
-
-        foreach ($webhookUrls as &$webhookUrl) {
-            $webhookUrl = trim($webhookUrl, '/');
-        }
-
-        $this->assertEquals($returnUrls, $this->flow->getReturnUrls());
-        $this->assertEquals($webhookUrls, $this->flow->getWebhookUrls());
-
-        foreach ($webhookUrls as $key => $value) {
-            $this->assertContains($secret, $this->flow->getWebhookWithSecret($key));
-        }
-
     }
 
     public function testMake()
