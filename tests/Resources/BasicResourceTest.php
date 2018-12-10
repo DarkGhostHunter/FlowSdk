@@ -107,6 +107,18 @@ class BasicResourceTest extends TestCase
 
     public function testDoesntCommit()
     {
+        $this->resource->setService($service = \Mockery::instanceMock(ServiceInterface::class));
+
+        $this->resource->setExists(true);
+        $this->resource->setResponse(new BasicResponse([]));
+
+        $response = $this->resource->commit();
+
+        $this->assertFalse($response);
+    }
+
+    public function testCantCommit()
+    {
         $this->expectException(\BadMethodCallException::class);
 
         $this->resource->setService($service = \Mockery::instanceMock(ServiceInterface::class));

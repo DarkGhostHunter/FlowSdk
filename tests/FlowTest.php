@@ -235,6 +235,24 @@ class FlowTest extends TestCase
         $this->assertAttributeInstanceOf(Processor::class, 'processor', $this->flow);
     }
 
+    public function testSendReturnsNothingOnIncorrectMethod()
+    {
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+
+        $processor->expects('prepare')->with(
+            'anything', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = '?apiKey=apiKey&foo=bar&s=123456789'
+        );
+
+        $response = $this->flow->send('anything', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertEmpty($response);
+
+    }
+
     public function testSendGetProduction()
     {
 
