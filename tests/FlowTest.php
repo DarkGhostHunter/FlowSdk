@@ -41,19 +41,19 @@ class FlowTest extends TestCase
 
     public function testIsProduction()
     {
-        $this->flow->setProduction(false);
+        $this->flow->isProduction(false);
         $this->assertFalse($this->flow->isProduction());
 
-        $this->flow->setProduction(true);
+        $this->flow->isProduction(true);
         $this->assertTrue($this->flow->isProduction());
     }
 
     public function testGetEndpointForEnvironment()
     {
-        $this->flow->setProduction(false);
+        $this->flow->isProduction(false);
         $this->assertEquals('https://flow.tuxpan.com/api', $this->flow->getEndpoint());
 
-        $this->flow->setProduction(true);
+        $this->flow->isProduction(true);
         $this->assertEquals('https://www.flow.cl/api', $this->flow->getEndpoint());
     }
 
@@ -232,13 +232,13 @@ class FlowTest extends TestCase
     {
         $this->flow->setProcessor(\Mockery::instanceMock(Processor::class));
 
-        $this->assertInstanceOf(Processor::class, $this->flow->getProcessor());
+        $this->assertAttributeInstanceOf(Processor::class, 'processor', $this->flow);
     }
 
     public function testSendGetProduction()
     {
 
-        $this->flow->setProduction(true);
+        $this->flow->isProduction(true);
         $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
         $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
 
@@ -261,7 +261,7 @@ class FlowTest extends TestCase
 
     public function testSendGetSandbox()
     {
-        $this->flow->setProduction(false);
+        $this->flow->isProduction(false);
         $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
         $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
 
@@ -309,7 +309,7 @@ class FlowTest extends TestCase
 
     public function testSendPostProduction()
     {
-        $this->flow->setProduction(true);
+        $this->flow->isProduction(true);
         $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
         $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
 

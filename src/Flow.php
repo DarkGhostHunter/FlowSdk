@@ -390,7 +390,7 @@ class Flow
         $flow->setAdapter(new GuzzleAdapter($flow));
 
         // Set the production environment if set explicitly
-        $flow->setProduction($environment === 'production');
+        $flow->isProduction($environment === 'production');
 
         // Return a new instance of Flow
         return $flow;
