@@ -88,6 +88,13 @@ class Flow
     protected $adapter;
 
     /**
+     * Processor to parse the data to a Request-able data
+     *
+     * @var Processor
+     */
+    protected $processor;
+
+    /**
      * Default Return URLs where the User will hit after a Flow process finishes
      *
      * @var array
@@ -122,6 +129,8 @@ class Flow
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
+
+        $this->processor = new Processor($this);
     }
 
     /*
@@ -221,6 +230,26 @@ class Flow
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * Get the Processor
+     *
+     * @return Processor
+     */
+    public function getProcessor()
+    {
+        return $this->processor;
+    }
+
+    /**
+     * Set the Processor
+     *
+     * @param Processor $processor
+     */
+    public function setProcessor(Processor $processor)
+    {
+        $this->processor = $processor;
     }
 
     /**
@@ -338,7 +367,7 @@ class Flow
     public function send(string $method, string $endpoint, array $parameters = null)
     {
         /** @var string|array $parameters */
-        $data = (new Processor($this))->prepare($method, $parameters);
+        $data = $this->processor->prepare($method, $parameters);
 
         switch ($method) {
             case 'get':

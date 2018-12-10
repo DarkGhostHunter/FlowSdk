@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use DarkGhostHunter\FlowSdk\Adapters\Processor;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
 use DarkGhostHunter\FlowSdk\Flow;
@@ -225,6 +226,111 @@ class FlowTest extends TestCase
         $this->expectException(\BadMethodCallException::class);
 
         $this->flow->invalidService();
+    }
+
+    public function testProcessor()
+    {
+        $this->flow->setProcessor(\Mockery::instanceMock(Processor::class));
+
+        $this->assertInstanceOf(Processor::class, $this->flow->getProcessor());
+    }
+
+    public function testSendGetProduction()
+    {
+
+        $this->flow->setProduction(true);
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+        $processor->expects('prepare')->with(
+            'get', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = '?apiKey=apiKey&foo=bar&s=123456789'
+        );
+
+        $adapter->expects('get')
+            ->with('https://www.flow.cl/api/endpoint/method' . $params)
+            ->andReturn(['foo' => 'bar']);
+
+        $response = $this->flow->send('get', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertInternalType('array', $response);
+        $this->assertEquals('bar', $response['foo']);
+
+    }
+
+    public function testSendGetSandbox()
+    {
+        $this->flow->setProduction(false);
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+        $processor->expects('prepare')->with(
+            'get', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = '?apiKey=apiKey&foo=bar&s=123456789'
+        );
+
+        $adapter->expects('get')
+            ->with('https://flow.tuxpan.com/api/endpoint/method' . $params)
+            ->andReturn(['foo' => 'bar']);
+
+        $response = $this->flow->send('get', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertInternalType('array', $response);
+        $this->assertEquals('bar', $response['foo']);
+
+    }
+
+    public function testSendPostSandbox()
+    {
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+        $processor->expects('prepare')->with(
+            'post', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = [
+                'apiKey' => 'apiKey',
+                'foo' => 'bar',
+                's' => '123456789'
+            ]
+        );
+
+        $adapter->expects('post')
+            ->with('https://flow.tuxpan.com/api/endpoint/method', $params)
+            ->andReturn(['foo' => 'bar']);
+
+        $response = $this->flow->send('post', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertInternalType('array', $response);
+        $this->assertEquals('bar', $response['foo']);
+    }
+
+    public function testSendPostProduction()
+    {
+        $this->flow->setProduction(true);
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+        $processor->expects('prepare')->with(
+            'post', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = [
+                'apiKey' => 'apiKey',
+                'foo' => 'bar',
+                's' => '123456789'
+            ]
+        );
+
+        $adapter->expects('post')
+            ->with('https://www.flow.cl/api/endpoint/method', $params)
+            ->andReturn(['foo' => 'bar']);
+
+        $response = $this->flow->send('post', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertInternalType('array', $response);
+        $this->assertEquals('bar', $response['foo']);
     }
 
     public function testSettlement()

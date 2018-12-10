@@ -7,7 +7,7 @@ use DarkGhostHunter\FlowSdk\Flow;
 use DarkGhostHunter\FlowSdk\Helpers\Fluent;
 use PHPUnit\Framework\TestCase;
 
-class AdapterProcessorTest extends TestCase
+class ProcessorTest extends TestCase
 {
 
     /** @var Flow|\Mockery\MockInterface */
@@ -32,6 +32,16 @@ class AdapterProcessorTest extends TestCase
         );
 
         $this->processor = new Processor($this->flow);
+    }
+
+    public function testIncorrectMethodReturnsNull()
+    {
+        $prepared = $this->processor->prepare(
+            'noGet',
+            ['foo' => 'bar']
+        );
+
+        $this->assertNull($prepared);
     }
 
     public function testGetRemovesEmptyKeys()
