@@ -33,13 +33,15 @@ class PlanTest extends TestCase
 
     public function testResourceExistenceFalse()
     {
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->with('plan.urlCallback')
             ->andReturn('https://app.com/plan/callback');
 
-        $this->adapter->expects('get')->andReturn([
-            'status' => 0
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), \Mockery::type('array'))
+            ->andReturn([
+                'status' => 0
+            ]);
 
         $resource = $this->service->get('1');
 
@@ -48,13 +50,15 @@ class PlanTest extends TestCase
 
     public function testResourceExistenceTrue()
     {
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->with('plan.urlCallback')
             ->andReturn('https://app.com/plan/callback');
 
-        $this->adapter->expects('get')->andReturn([
-            'status' => 1
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), ['planId' => '1'])
+            ->andReturn([
+                'status' => 1
+            ]);
 
         $resource = $this->service->get('1');
 
@@ -63,7 +67,7 @@ class PlanTest extends TestCase
 
     public function testResourceHasDefaults()
     {
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->with('plan.urlCallback')
             ->andReturn('https://app.com/plan/callback');
 
@@ -78,7 +82,7 @@ class PlanTest extends TestCase
 
     public function testResourceDoesntHaveDefaults()
     {
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->with('plan.urlCallback')
             ->andReturnNull();
 

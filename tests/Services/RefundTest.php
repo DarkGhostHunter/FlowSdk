@@ -33,7 +33,7 @@ class RefundTest extends TestCase
 
     public function testResourceHasDefaults()
     {
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->with('refund.urlCallBack')
             ->andReturn('https://app.com/refund/callback');
 
@@ -48,7 +48,7 @@ class RefundTest extends TestCase
 
     public function testResourceDoesntHaveDefaults()
     {
-        $this->flow->expects('getWebhookWithSecret')
+        $this->flow->expects('getWebhookUrls')
             ->with('refund.urlCallBack')
             ->andReturnNull();
 

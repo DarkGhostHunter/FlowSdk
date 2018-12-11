@@ -18,13 +18,13 @@ class BaseServiceTest extends TestCase
     /**
      * @var Flow|\Mockery\MockInterface
      */
-    protected $mockFlow;
+    protected $flow;
 
     protected function setUp()
     {
-        $this->mockFlow = \Mockery::instanceMock(Flow::class);
+        $this->flow = \Mockery::instanceMock(Flow::class);
 
-        $this->service = new class ($this->mockFlow) extends BaseService {
+        $this->service = new class ($this->flow) extends BaseService {
             protected $endpoint = 'endpoint';
         };
     }
@@ -60,7 +60,7 @@ class BaseServiceTest extends TestCase
 
     public function testMake()
     {
-        $this->mockFlow->expects('getLogger')->andReturnUndefined();
+        $this->flow->expects('getLogger')->andReturnUndefined();
 
         $resource = $this->service->make([
             'foo' => 'bar'
@@ -85,7 +85,7 @@ class BaseServiceTest extends TestCase
     {
         $this->assertNull($this->service->getEditableAttributes());
 
-        $service = new class ($this->mockFlow) extends BaseService {
+        $service = new class ($this->flow) extends BaseService {
             protected $editableAttributes = ['foo', 'bar'];
         };
 

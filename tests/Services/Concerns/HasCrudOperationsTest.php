@@ -15,11 +15,6 @@ class HasCrudOperationsTest extends TestCase
 {
 
     /**
-     * @var AdapterInterface|\Mockery\MockInterface
-     */
-    protected $mockAdapter;
-
-    /**
      * @var Flow|\Mockery\MockInterface
      */
     protected $mockFlow;
@@ -35,6 +30,8 @@ class HasCrudOperationsTest extends TestCase
             use HasCrudOperations;
         };
 
+        $this->service->setId('serviceId');
+
         $logger = \Mockery::instanceMock(LoggerInterface::class);
 
         $logger->expects('debug');
@@ -43,58 +40,48 @@ class HasCrudOperationsTest extends TestCase
         $this->mockFlow->expects('getLogger')->andReturn($logger);
 
         $this->mockFlow->setLogger($logger);
-
-        $this->mockAdapter = \Mockery::instanceMock(AdapterInterface::class);
-    }
-
-    public function testMakeAndSave()
-    {
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('post')->andReturn(['foo' => 'bar']);
-
-        $resource = $this->service->makeAndSave(['key' => 'value']);
-
-        $this->assertInstanceOf(ResourceInterface::class, $resource);
     }
 
     public function testGet()
     {
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('get')->andReturn(['foo' => 'bar']);
+        $this->mockFlow->expects('send')
+            ->with('get', \Mockery::type('string'), [$this->service->getId() => 'bar'])
+            ->andReturnUsing(function ($method, $endpoint, $data) {
+                return $data;
+            });
 
-        $resource = $this->service->get('key');
-
-        $this->assertInstanceOf(ResourceInterface::class, $resource);
-    }
-
-    public function testMakeAndCommit()
-    {
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('post')->andReturn(['foo' => 'bar']);
-
-        $resource = $this->service->makeAndCommit(['foo' => 'bar']);
+        $resource = $this->service->get('bar');
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
+        $this->assertEquals('bar', $resource->{$this->service->getId()});
     }
 
     public function testCreate()
     {
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('post')->andReturn(['foo' => 'bar']);
+        $this->mockFlow->expects('send')
+            ->with('post', \Mockery::type('string'), ['foo' => 'bar'])
+            ->andReturnUsing(function ($method, $endpoint, $data) {
+                return $data;
+            });
 
         $resource = $this->service->create(['foo' => 'bar']);
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
+        $this->assertEquals('bar', $resource->foo);
     }
 
     public function testDelete()
     {
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('post')->andReturn(['foo' => 'bar']);
+        $this->mockFlow->expects('send')
+            ->with('post', \Mockery::type('string'), [$this->service->getId() => 'bar'])
+            ->andReturnUsing(function ($method, $endpoint, $data) {
+                return $data;
+            });
 
-        $resource = $this->service->delete('foo');
+        $resource = $this->service->delete('bar');
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
+        $this->assertEquals('bar', $resource->{$this->service->getId()});
 
     }
 
@@ -107,8 +94,11 @@ class HasCrudOperationsTest extends TestCase
             ];
         };
 
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('post')->andReturn(['foo' => 'bar']);
+        $this->mockFlow->expects('send')
+            ->with('post', \Mockery::type('string'), ['foo' => 'bar'])
+            ->andReturnUsing(function ($method, $endpoint, $data) {
+                return $data;
+            });
 
         $response = $service->commit(['foo' => 'bar']);
 
@@ -118,26 +108,30 @@ class HasCrudOperationsTest extends TestCase
 
     public function testUpdate()
     {
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('post')->andReturn(['foo' => 'bar']);
+        $this->mockFlow->expects('send')
+            ->with('post', \Mockery::type('string'), [
+                $this->service->getID() => 'theResourceId',
+                'foo' => 'bar'
+            ])
+            ->andReturnUsing(function ($method, $endpoint, $data) {
+                return $data;
+            });
 
-        $resource = $this->service->update('foo');
+        $resource = $this->service->update('theResourceId', ['foo' => 'bar']);
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
     }
 
     public function testUpdateWithOnly()
     {
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('post')
-            ->with(
-                \Mockery::type('string'),
-                [
-                    'token' => 'theResourceId',
-                    'foo' => 'bar',
-                ]
-            )
-            ->andReturn(['foo' => 'bar']);
+        $this->mockFlow->expects('send')
+            ->with('post', \Mockery::type('string'), [
+                $this->service->getID() => 'theResourceId',
+                'foo' => 'bar'
+            ])
+            ->andReturnUsing(function ($method, $endpoint, $data) {
+                return $data;
+            });
 
         $this->service->setEditableAttributes([
             'foo'
@@ -150,6 +144,7 @@ class HasCrudOperationsTest extends TestCase
 
         $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertNull($resource->key);
+        $this->assertEquals('bar', $resource->foo);
     }
 
     public function testCantGet()

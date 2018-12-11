@@ -4,6 +4,7 @@ namespace Tests\Services\Concerns;
 
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Flow;
+use DarkGhostHunter\FlowSdk\Resources\BasicResource;
 use DarkGhostHunter\FlowSdk\Responses\PagedResponse;
 use DarkGhostHunter\FlowSdk\Services\BaseService;
 use DarkGhostHunter\FlowSdk\Services\Concerns\HasPagination;
@@ -54,18 +55,27 @@ class HasPaginationTest extends TestCase
 
     public function testGetPage()
     {
-        $this->mockFlow->expects('getAdapter')->andReturn($this->mockAdapter);
-        $this->mockAdapter->expects('get')->andReturn([
-            'total' => 200,
-            'hasMore' => 1,
-            'data' => [
-                0 => ['item' => 1],
-                1 => ['item' => 2]
-            ]
-        ]);
+        $this->mockFlow->expects('send')
+            ->with('get', \Mockery::type('string'), [
+                'start' => 20,
+                'limit' => 10,
+            ])
+            ->andReturn([
+                'total' => 200,
+                'hasMore' => 1,
+                'data' => [
+                    0 => ['item' => 1],
+                    1 => ['item' => 2]
+                ]
+            ]);
 
-        $page = $this->service->getPage(1);
+        $page = $this->service->getPage(3);
 
         $this->assertInstanceOf(PagedResponse::class, $page);
+        $this->assertInternalType('array', $page->items);
+        $this->assertTrue($page->hasMore);
+        $this->assertEquals(200, $page->total);
+        $this->assertInstanceOf(BasicResource::class, $page->items[0]);
+        $this->assertInstanceOf(BasicResource::class, $page->items[1]);
     }
 }

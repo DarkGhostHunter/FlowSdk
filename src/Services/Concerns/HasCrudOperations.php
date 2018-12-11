@@ -2,7 +2,6 @@
 
 namespace DarkGhostHunter\FlowSdk\Services\Concerns;
 
-use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
 use DarkGhostHunter\FlowSdk\Responses\BasicResponse;
 
 /**
@@ -42,15 +41,14 @@ trait HasCrudOperations
      * Performs the Commit action with the Flow Adapter
      *
      * @param array $attributes
-     * @param null $options
      * @return array
      */
-    protected function performCommit(array $attributes, $options = null)
+    protected function performCommit(array $attributes)
     {
-        return $this->flow->getAdapter()->post(
+        return $this->flow->send(
+            'post',
             $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['commit'] ?? 'create'),
-            $attributes,
-            $options
+            $attributes
         );
     }
 
@@ -82,7 +80,8 @@ trait HasCrudOperations
      */
     protected function performCreate(array $attributes, array $options = null)
     {
-        return $this->flow->getAdapter()->post(
+        return $this->flow->send(
+            'post',
             $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['create'] ?? 'create'),
             $attributes
         );
@@ -116,7 +115,8 @@ trait HasCrudOperations
      */
     protected function performGet(string $key, string $id, array $options = null)
     {
-        return $this->flow->getAdapter()->get(
+        return $this->flow->send(
+            'get',
             $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['get'] ?? 'get'),
             [$key => $id]
         );
@@ -161,7 +161,8 @@ trait HasCrudOperations
      */
     protected function performUpdate(array $attributes, array $options = null)
     {
-        return $this->flow->getAdapter()->post(
+        return $this->flow->send(
+            'post',
             $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['update'] ?? 'edit'),
             $attributes
         );
@@ -196,47 +197,10 @@ trait HasCrudOperations
      */
     protected function performDelete(string $key, string $id, array $options = null)
     {
-        return $this->flow->getAdapter()->post(
+        return $this->flow->send(
+            'post',
             $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['delete'] ?? 'delete'),
             [$key => $id]
         );
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Convenience Operations
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Makes and Commits immediately a Resource
-     *
-     * @param array $attributes
-     * @return ResourceInterface
-     * @throws \Exception
-     */
-    public function makeAndCommit(array $attributes)
-    {
-        $resource = $this->make($attributes);
-
-        $resource->commit();
-
-        return $resource;
-    }
-
-    /**
-     * Makes and Saves a Resource
-     *
-     * @param array $attributes
-     * @return ResourceInterface
-     * @throws \Exception
-     */
-    public function makeAndSave(array $attributes)
-    {
-        $resource = $this->make($attributes);
-
-        $resource->save();
-
-        return $resource;
     }
 }

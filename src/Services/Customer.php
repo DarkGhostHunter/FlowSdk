@@ -75,7 +75,7 @@ class Customer extends BaseService
         $this->flow->getLogger()->debug("Registering Card for $customerId, returns to $urlReturn");
 
         return BasicResponse::make(
-            $this->flow->getAdapter()->post(
+            $this->flow->send('post',
                 $this->endpoint . '/register',
                 [
                     'customerId' => $customerId,
@@ -98,7 +98,8 @@ class Customer extends BaseService
         $this->flow->getLogger()->debug("Retrieving Card with token $token");
 
         $resource = $this->make(
-            $this->flow->getAdapter()->get(
+            $this->flow->send(
+                'get',
                 $this->endpoint . '/getRegisterStatus',
                 ['token' => $token]
             )
@@ -122,7 +123,8 @@ class Customer extends BaseService
         $this->flow->getLogger()->debug("Unregistering Card for $customerId");
 
         return $this->make(
-            $this->flow->getAdapter()->post(
+            $this->flow->send(
+                'post',
                 $this->endpoint . '/unRegister',
                 ['customerId' => $customerId]
             )
@@ -167,7 +169,8 @@ class Customer extends BaseService
         $this->flow->getLogger()->debug('Charging: ' . json_encode($attributes));
 
         return $this->makeCharge(
-            $this->flow->getAdapter()->post(
+            $this->flow->send(
+                'post',
                 $this->endpoint . '/charge',
                 $attributes
             )
@@ -188,7 +191,8 @@ class Customer extends BaseService
         $this->flow->getLogger()->debug("Reversing Charge: $idType, $value");
 
         return BasicResponse::make(
-            $this->flow->getAdapter()->post(
+            $this->flow->send(
+                'post',
                 $this->endpoint . '/reverseCharge',
                 [
                     $idType => $value

@@ -15,26 +15,26 @@ class InvoiceTest extends TestCase
     /** @var Invoice */
     protected $service;
 
-    /** @var AdapterInterface|\Mockery\MockInterface */
-    protected $mockAdapter;
+    /** @var Flow|\Mockery\MockInterface */
+    protected $flow;
 
     protected function setUp()
     {
-        $this->service = new Invoice($flow = \Mockery::instanceMock(Flow::class));
+        $this->service = new Invoice($this->flow = \Mockery::instanceMock(Flow::class));
 
-        $flow->expects('getAdapter')->andReturn($this->mockAdapter = \Mockery::instanceMock(AdapterInterface::class));
-
-        $flow->expects('getLogger')->andReturn($logger = \Mockery::instanceMock(LoggerInterface::class));
+        $this->flow->expects('getLogger')->andReturn($logger = \Mockery::instanceMock(LoggerInterface::class));
 
         $logger->expects('debug');
     }
 
     public function testResourceExistenceFalse()
     {
-        $this->mockAdapter->expects('get')->andReturn([
-            'attemped' => 1,
-            'status' => 1
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), ['invoiceId' => '1'])
+            ->andReturn([
+                'attemped' => 1,
+                'status' => 1
+            ]);
 
         $resource = $this->service->get('1');
 
@@ -43,10 +43,12 @@ class InvoiceTest extends TestCase
 
     public function testResourceExistenceTrue()
     {
-        $this->mockAdapter->expects('get')->andReturn([
-            'attemped' => 0,
-            'status' => 1
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), ['invoiceId' => '1'])
+            ->andReturn([
+                'attemped' => 0,
+                'status' => 1
+            ]);
 
         $resource = $this->service->get('1');
 
@@ -55,9 +57,11 @@ class InvoiceTest extends TestCase
 
     public function testCancel()
     {
-        $this->mockAdapter->expects('post')->andReturns([
-            'foo' => 'bar'
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), ['invoiceId' => 'theInvoiceId'])
+            ->andReturn([
+                'foo' => 'bar'
+            ]);
 
         $resource = $this->service->cancel('theInvoiceId');
 

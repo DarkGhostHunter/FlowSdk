@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use DarkGhostHunter\FlowSdk\Adapters\Processor;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
 use DarkGhostHunter\FlowSdk\Flow;
@@ -40,19 +41,19 @@ class FlowTest extends TestCase
 
     public function testIsProduction()
     {
-        $this->flow->setProduction(false);
+        $this->flow->isProduction(false);
         $this->assertFalse($this->flow->isProduction());
 
-        $this->flow->setProduction(true);
+        $this->flow->isProduction(true);
         $this->assertTrue($this->flow->isProduction());
     }
 
     public function testGetEndpointForEnvironment()
     {
-        $this->flow->setProduction(false);
+        $this->flow->isProduction(false);
         $this->assertEquals('https://flow.tuxpan.com/api', $this->flow->getEndpoint());
 
-        $this->flow->setProduction(true);
+        $this->flow->isProduction(true);
         $this->assertEquals('https://www.flow.cl/api', $this->flow->getEndpoint());
     }
 
@@ -133,8 +134,7 @@ class FlowTest extends TestCase
 
     public function testReturnsNullWebhookIfNotSet()
     {
-        $this->flow->setWebhookSecret('customsecret');
-        $webhook = $this->flow->getWebhookWithSecret('payment.created');
+        $webhook = $this->flow->getWebhookUrls('payment.created');
 
         $this->assertNull($webhook);
     }
@@ -164,36 +164,6 @@ class FlowTest extends TestCase
         $this->flow->setWebhookSecret($secret = bin2hex(random_bytes(16)));
 
         $this->assertEquals($secret, $this->flow->getWebhookSecret());
-    }
-
-    public function testWebhookSecretAppendsToUrls()
-    {
-        $this->flow->setWebhookSecret($secret = bin2hex(random_bytes(16)));
-
-        $this->flow->setReturnUrls($returnUrls = [
-            'payment.urlReturn'     => 'https://app.com/payment/return',
-            'card.urlReturn'        => 'https://app.com/index.php?site=card-return',
-        ]);
-
-        $this->flow->setWebhookUrls($webhookUrls = [
-            'payment.created'       => 'https://app.com/webhooks/payment-created/',
-            'payment.createdEmail'  => 'https://app.com/index.php?site=payment-email-created',
-            'plan.subscribed'       => 'https://app.com/webhooks/plan-subscribed/',
-            'refund.created'        => 'https://app.com/webhooks/refund-created',
-            'customer.registered'   => 'https://finances.app.com/webhooks/customer-registered',
-        ]);
-
-        foreach ($webhookUrls as &$webhookUrl) {
-            $webhookUrl = trim($webhookUrl, '/');
-        }
-
-        $this->assertEquals($returnUrls, $this->flow->getReturnUrls());
-        $this->assertEquals($webhookUrls, $this->flow->getWebhookUrls());
-
-        foreach ($webhookUrls as $key => $value) {
-            $this->assertContains($secret, $this->flow->getWebhookWithSecret($key));
-        }
-
     }
 
     public function testMake()
@@ -256,6 +226,129 @@ class FlowTest extends TestCase
         $this->expectException(\BadMethodCallException::class);
 
         $this->flow->invalidService();
+    }
+
+    public function testProcessor()
+    {
+        $this->flow->setProcessor(\Mockery::instanceMock(Processor::class));
+
+        $this->assertAttributeInstanceOf(Processor::class, 'processor', $this->flow);
+    }
+
+    public function testSendReturnsNothingOnIncorrectMethod()
+    {
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+
+        $processor->expects('prepare')->with(
+            'anything', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = '?apiKey=apiKey&foo=bar&s=123456789'
+        );
+
+        $response = $this->flow->send('anything', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertEmpty($response);
+
+    }
+
+    public function testSendGetProduction()
+    {
+
+        $this->flow->isProduction(true);
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+        $processor->expects('prepare')->with(
+            'get', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = '?apiKey=apiKey&foo=bar&s=123456789'
+        );
+
+        $adapter->expects('get')
+            ->with('https://www.flow.cl/api/endpoint/method' . $params)
+            ->andReturn(['foo' => 'bar']);
+
+        $response = $this->flow->send('get', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertInternalType('array', $response);
+        $this->assertEquals('bar', $response['foo']);
+
+    }
+
+    public function testSendGetSandbox()
+    {
+        $this->flow->isProduction(false);
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+        $processor->expects('prepare')->with(
+            'get', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = '?apiKey=apiKey&foo=bar&s=123456789'
+        );
+
+        $adapter->expects('get')
+            ->with('https://flow.tuxpan.com/api/endpoint/method' . $params)
+            ->andReturn(['foo' => 'bar']);
+
+        $response = $this->flow->send('get', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertInternalType('array', $response);
+        $this->assertEquals('bar', $response['foo']);
+
+    }
+
+    public function testSendPostSandbox()
+    {
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+        $processor->expects('prepare')->with(
+            'post', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = [
+                'apiKey' => 'apiKey',
+                'foo' => 'bar',
+                's' => '123456789'
+            ]
+        );
+
+        $adapter->expects('post')
+            ->with('https://flow.tuxpan.com/api/endpoint/method', $params)
+            ->andReturn(['foo' => 'bar']);
+
+        $response = $this->flow->send('post', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertInternalType('array', $response);
+        $this->assertEquals('bar', $response['foo']);
+    }
+
+    public function testSendPostProduction()
+    {
+        $this->flow->isProduction(true);
+        $this->flow->setAdapter($adapter = \Mockery::instanceMock(AdapterInterface::class));
+        $this->flow->setProcessor($processor = \Mockery::instanceMock(Processor::class));
+
+        $processor->expects('prepare')->with(
+            'post', $array = ['foo' => 'bar']
+        )->andReturn(
+            $params = [
+                'apiKey' => 'apiKey',
+                'foo' => 'bar',
+                's' => '123456789'
+            ]
+        );
+
+        $adapter->expects('post')
+            ->with('https://www.flow.cl/api/endpoint/method', $params)
+            ->andReturn(['foo' => 'bar']);
+
+        $response = $this->flow->send('post', '/endpoint/method/', ['foo' => 'bar']);
+
+        $this->assertInternalType('array', $response);
+        $this->assertEquals('bar', $response['foo']);
     }
 
     public function testSettlement()

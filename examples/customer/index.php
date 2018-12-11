@@ -57,7 +57,7 @@ if ($_POST['customer'] ?? null) {
         <div class="form-group col-md-4">
             <label for="externalId">externalId</label>
             <input id="externalId" type="text" class="form-control" name="customer[externalId]"
-                   value="<?php echo 'customerId#' . bin2hex(random_bytes(4)) ?>" required>
+                   value="<?php echo 'customerId-' . bin2hex(random_bytes(4)) ?>" required>
             <small class="input-text text-black-50">Customer ID for your application.</small>
         </div>
 

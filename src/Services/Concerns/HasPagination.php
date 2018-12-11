@@ -47,7 +47,8 @@ trait HasPagination
         );
 
         // Get the BasicResponse from the Adapter
-        $response = $this->flow->getAdapter()->get(
+        $response = $this->flow->send(
+            'get',
             $this->endpoint . '/' . ($options['method'] ?? $this->paginationMethod ?? 'list'),
             $params
         );
@@ -55,13 +56,13 @@ trait HasPagination
         $items = [];
 
         // For each item in the `data` key, transform it as this Service Resource or the class
-        foreach ($response['data'] ?? [] as $key => $item) {
-            $item = $this->make($item);
-            $items[$params['start'] + $key] = $item;
+        foreach ($response['data'] ?? [] as $item) {
+            $items[] = $this->make($item);
         }
 
         // Becauze Zend Engine uses copy-on-write, we didn't use foreach by reference
         $response['items'] = $items;
+
         unset($response['data']);
 
         // Return the paged BasicResponse

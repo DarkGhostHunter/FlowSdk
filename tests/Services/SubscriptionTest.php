@@ -15,25 +15,25 @@ class SubscriptionTest extends TestCase
     /** @var Subscription */
     protected $service;
 
-    /** @var AdapterInterface|\Mockery\MockInterface */
-    protected $adapter;
+    /** @var Flow|\Mockery\MockInterface */
+    protected $flow;
 
     protected function setUp()
     {
-        $this->service = new Subscription($flow = \Mockery::instanceMock(Flow::class));
+        $this->service = new Subscription($this->flow = \Mockery::instanceMock(Flow::class));
 
-        $flow->expects('getAdapter')->andReturn($this->adapter = \Mockery::instanceMock(AdapterInterface::class));
-
-        $flow->expects('getLogger')->andReturn($logger = \Mockery::instanceMock(LoggerInterface::class));
+        $this->flow->expects('getLogger')->andReturn($logger = \Mockery::instanceMock(LoggerInterface::class));
 
         $logger->expects('debug');
     }
 
     public function testResourceExistenceFalse()
     {
-        $this->adapter->expects('get')->andReturn([
-            'cancel_at' => '2018-01-01'
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), ['subscriptionId' => '1'])
+            ->andReturn([
+                'cancel_at' => '2018-01-01'
+            ]);
 
         $resource = $this->service->get('1');
 
@@ -42,9 +42,11 @@ class SubscriptionTest extends TestCase
 
     public function testResourceExistenceTrue()
     {
-        $this->adapter->expects('get')->andReturn([
-            'cancel_at' => '2030-01-01'
-        ]);
+        $this->flow->expects('send')
+            ->with('get', \Mockery::type('string'), ['subscriptionId' => '1'])
+            ->andReturn([
+                'cancel_at' => '2030-01-01'
+            ]);
 
         $resource = $this->service->get('1');
 
@@ -53,11 +55,13 @@ class SubscriptionTest extends TestCase
 
     public function testRemoveCoupon()
     {
-        $this->adapter->expects('post')->andReturn([
-            'foo' => 'bar',
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), ['subscriptionId' => 'theSubscriptionId'])
+            ->andReturn([
+                'foo' => 'bar',
+            ]);
 
-        $resource = $this->service->removeCoupon('subscriptionId');
+        $resource = $this->service->removeCoupon('theSubscriptionId');
 
         $this->assertInstanceOf(BasicResource::class, $resource);
         $this->assertEquals('bar', $resource->foo);
@@ -65,11 +69,16 @@ class SubscriptionTest extends TestCase
 
     public function testAddCoupon()
     {
-        $this->adapter->expects('post')->andReturn([
-            'foo' => 'bar',
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), [
+                'subscriptionId' => 'theSubscriptionId',
+                'couponId' => 'couponId'
+            ])
+            ->andReturn([
+                'foo' => 'bar',
+            ]);
 
-        $resource = $this->service->addCoupon('subscriptionId', 'couponId');
+        $resource = $this->service->addCoupon('theSubscriptionId', 'couponId');
 
         $this->assertInstanceOf(BasicResource::class, $resource);
         $this->assertEquals('bar', $resource->foo);
@@ -77,11 +86,16 @@ class SubscriptionTest extends TestCase
 
     public function testCancel()
     {
-        $this->adapter->expects('post')->andReturn([
-            'foo' => 'bar',
-        ]);
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), [
+                'subscriptionId' => 'theSubscriptionId',
+                'at_period_end' => 1
+            ])
+            ->andReturn([
+                'foo' => 'bar',
+            ]);
 
-        $resource = $this->service->cancel('subscriptionId', true);
+        $resource = $this->service->cancel('theSubscriptionId', true);
 
         $this->assertInstanceOf(BasicResource::class, $resource);
         $this->assertEquals('bar', $resource->foo);

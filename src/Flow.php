@@ -2,10 +2,11 @@
 
 namespace DarkGhostHunter\FlowSdk;
 
-use DarkGhostHunter\FlowSdk\Adapters\GuzzleAdapter;
+use DarkGhostHunter\FlowSdk\Helpers\Fluent;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\FlowSdk\Adapters\Processor;
+use DarkGhostHunter\FlowSdk\Adapters\GuzzleAdapter;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -87,6 +88,13 @@ class Flow
     protected $adapter;
 
     /**
+     * Processor to parse the data to a Request-able data
+     *
+     * @var Processor
+     */
+    protected $processor;
+
+    /**
      * Default Return URLs where the User will hit after a Flow process finishes
      *
      * @var array
@@ -121,6 +129,8 @@ class Flow
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
+
+        $this->processor = new Processor($this);
     }
 
     /*
@@ -132,21 +142,14 @@ class Flow
     /**
      * If Flow is using Production Environment
      *
+     * @param bool|null $isProduction
      * @return string
      */
-    public function isProduction()
+    public function isProduction(bool $isProduction = null)
     {
-        return $this->isProduction;
-    }
-
-    /**
-     * Set Flow Environment to production
-     *
-     * @param bool $isProduction
-     */
-    public function setProduction(bool $isProduction)
-    {
-        $this->isProduction = $isProduction;
+        return $isProduction === null
+            ? $this->isProduction
+            : $this->isProduction = $isProduction;
     }
 
     /**
@@ -223,6 +226,16 @@ class Flow
     }
 
     /**
+     * Set the Processor
+     *
+     * @param Processor $processor
+     */
+    public function setProcessor(Processor $processor)
+    {
+        $this->processor = $processor;
+    }
+
+    /**
      * Get the Return URLs
      *
      * @param string $key
@@ -243,11 +256,9 @@ class Flow
      */
     public function setReturnUrls(array $returnUrls)
     {
-        foreach ($returnUrls as &$returnUrl) {
-            $returnUrl = $this->parseUrl($returnUrl);
+        foreach ($returnUrls as $key => $returnUrl) {
+            $this->returnUrls[$key] = $this->parseUrl($returnUrl);
         }
-
-        $this->returnUrls = $returnUrls;
     }
 
     /**
@@ -264,24 +275,6 @@ class Flow
     }
 
     /**
-     * Gets a Webhook with the Secret if it's set
-     *
-     * @param string $key
-     * @return string|null
-     */
-    public function getWebhookWithSecret(string $key)
-    {
-        if ($webhook = $this->getWebhookUrls($key)) {
-            return $webhook . ($this->webhookSecret
-                ? (strpos($webhook, '?') ? '&' : '?') . 'secret=' . $this->webhookSecret
-                : ''
-            );
-        };
-
-        return null;
-    }
-
-    /**
      * Set the Webhook URLs
      *
      * @param array $webhookUrls
@@ -289,11 +282,9 @@ class Flow
      */
     public function setWebhookUrls(array $webhookUrls)
     {
-        foreach ($webhookUrls as &$webhookUrl) {
-            $webhookUrl = $this->parseUrl($webhookUrl);
+        foreach ($webhookUrls as $key => $webhookUrl) {
+            $this->webhookUrls[$key] = $this->parseUrl($webhookUrl);
         }
-
-        $this->webhookUrls = $webhookUrls;
     }
 
     /**
@@ -340,6 +331,38 @@ class Flow
 
     /*
     |--------------------------------------------------------------------------
+    | Request
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Processes the data to send, and passes it to the adapter
+     *
+     * @param string $method
+     * @param string $endpoint
+     * @param array|null $parameters
+     * @return array
+     */
+    public function send(string $method, string $endpoint, array $parameters = null)
+    {
+        /** @var string|array $parameters */
+        $data = $this->processor->prepare($method, $parameters);
+
+        switch ($method) {
+            case 'get':
+                return $this->adapter->get(
+                    $this->getEndpoint() . '/' . trim($endpoint, '/') . trim($data, '/')
+                );
+            case 'post':
+                return $this->adapter->post(
+                    $this->getEndpoint() . '/' . trim($endpoint, '/'),
+                    $data ?? []
+                );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | Static Helper
     |--------------------------------------------------------------------------
     */
@@ -367,7 +390,7 @@ class Flow
         $flow->setAdapter(new GuzzleAdapter($flow));
 
         // Set the production environment if set explicitly
-        $flow->setProduction($environment === 'production');
+        $flow->isProduction($environment === 'production');
 
         // Return a new instance of Flow
         return $flow;
