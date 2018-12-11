@@ -1,8 +1,10 @@
 # Flow SDK for PHP 5.6
 
-This is the legacy branch of Flow SDK, targeting specifically PHP 5.6. [It's encouraged to use the `stable` branch for the most updated code](https://github.com/DarkGhostHunter/FlowSdk/tree/stable).
+**[It's encouraged to use the `stable` branch for the most updated code.](https://github.com/DarkGhostHunter/FlowSdk/tree/stable)**
 
-This package is **not maintained nor supported in any way**. It exists only for compatibility purposes for extreme conditions.
+This is the legacy branch of Flow SDK, targeting specifically PHP 5.6.
+
+This package is **not maintained nor supported in any way**. It exists only for compatibility purposes for extreme conditions. Use at your own risk.
 
 It *may* be compatible with PHP 5.5 and below.
 
