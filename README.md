@@ -15,8 +15,11 @@ With Flow, you don't have to register in each service and comply with each of th
 
 * A [Flow account](https://www.flow.cl/app/web/register.php)
 * PHP 7.1.3+
+* ext-json
 * ext-openssl
 * ext-curl
+
+> [PHP 5 will never be supported](#php-5-compatibility).
 
 ## Install
 
@@ -92,6 +95,16 @@ Just issue a PR (Pull Request) with good code quality and all tests passed (or a
 ## Examples
 
 If you're lost and what some kind of prototyping, or just want to know how a transaction process works, check the [`examples`](examples) directory.
+
+## PHP 5 Compatibility
+
+This package will never be compatible with PHP 7.0 or below. Reasons are follows:
+
+* PHP 5.6 and below, as well PHP 7.0 and below, will no longer be supported by January 1th, 2019. **Security releases won't come after this date**.[¹](http://php.net/supported-versions.php)
+* PHP 5 aggravates maintainability of this package in the short and long term due to breaking changes in language and hassle on some functions behaviour.
+* PHP 5 does not perform as well as PHP 7 and above.
+
+If you need PHP 5 compatibility, you can fork this package at your own will, or make a PR to a theorical "legacy".
 
 ## License
 
