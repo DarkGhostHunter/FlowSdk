@@ -3,7 +3,6 @@
   "description": "Unofficial PHP SDK for Flow, a chilean payment gateway.",
   "type": "library",
   "license": "MIT",
-  "version": "1.0.0",
   "authors": [
     {
       "name": "Italo Baeza C.",
