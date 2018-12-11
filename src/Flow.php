@@ -145,7 +145,7 @@ class Flow
      * @param bool|null $isProduction
      * @return string
      */
-    public function isProduction(bool $isProduction = null)
+    public function isProduction($isProduction = null)
     {
         return $isProduction === null
             ? $this->isProduction
@@ -241,10 +241,10 @@ class Flow
      * @param string $key
      * @return array
      */
-    public function getReturnUrls(string $key = null)
+    public function getReturnUrls($key = null)
     {
         return $key
-            ? $this->returnUrls[$key] ?? null
+            ? isset($this->returnUrls[$key]) ? $this->returnUrls[$key] : null
             : $this->returnUrls;
     }
 
@@ -267,10 +267,10 @@ class Flow
      * @param string|null $key
      * @return array|string
      */
-    public function getWebhookUrls(string $key = null)
+    public function getWebhookUrls($key = null)
     {
         return $key
-            ? $this->webhookUrls[$key] ?? null
+            ? isset($this->webhookUrls[$key]) ? $this->webhookUrls[$key] : null
             : $this->webhookUrls;
     }
 
@@ -292,7 +292,7 @@ class Flow
      *
      * @param string $webhookSecret
      */
-    public function setWebhookSecret(string $webhookSecret)
+    public function setWebhookSecret($webhookSecret)
     {
         $this->webhookSecret = $webhookSecret;
     }
@@ -314,7 +314,7 @@ class Flow
      * @return string
      * @throws InvalidUrlException
      */
-    protected function parseUrl(string $url)
+    protected function parseUrl($url)
     {
         $url = trim($url, '/');
 
@@ -343,7 +343,7 @@ class Flow
      * @param array|null $parameters
      * @return array
      */
-    public function send(string $method, string $endpoint, array $parameters = null)
+    public function send($method, $endpoint, array $parameters = null)
     {
         /** @var string|array $parameters */
         $data = $this->processor->prepare($method, $parameters);
@@ -356,7 +356,7 @@ class Flow
             case 'post':
                 return $this->adapter->post(
                     $this->getEndpoint() . '/' . trim($endpoint, '/'),
-                    $data ?? []
+                    isset($data) ? $data : []
                 );
         }
     }
@@ -376,11 +376,11 @@ class Flow
      * @return Flow
      * @throws \Exception
      */
-    public static function make(string $environment, array $credentials, LoggerInterface $logger = null)
+    public static function make($environment, array $credentials, LoggerInterface $logger = null)
     {
         // If no logger is passed, we will use the null logger
         $flow = new static(
-            $logger ?? new NullLogger()
+            isset($logger) && $logger !== null ? $logger : new NullLogger()
         );
 
         // Set the credentials, or throw an Exception if there is none
@@ -412,8 +412,9 @@ class Flow
     public function __call($name, $arguments)
     {
         if (array_key_exists($name, $this->servicesMap)) {
-            return $this->services[$name]
-                ?? $this->services[$name] = new $this->servicesMap[$name]($this);
+            return isset($this->services[$name]) && $this->services[$name] !== null
+                ? $this->services[$name]
+                : $this->services[$name] = new $this->servicesMap[$name]($this);
         }
 
         throw new \BadMethodCallException("Method $name does not exists");

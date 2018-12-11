@@ -69,7 +69,7 @@ class Payment extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource
      * @throws \Exception
      */
-    public function getByCommerceOrder(string $id)
+    public function getByCommerceOrder($id)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Retrieving Payment by CommerceOrder $id");
@@ -86,7 +86,7 @@ class Payment extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource
      * @throws \Exception
      */
-    public function getByCommerceId(string $id)
+    public function getByCommerceId($id)
     {
         return $this->getByCommerceOrder($id);
     }

@@ -10,6 +10,7 @@ use DarkGhostHunter\FlowSdk\Services\BaseService;
 use DarkGhostHunter\FlowSdk\Services\Concerns\HasPagination;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Tests\Services\Concerns\Mocks\MockPagination;
 
 class HasPaginationTest extends TestCase
 {
@@ -30,9 +31,7 @@ class HasPaginationTest extends TestCase
 
     protected function setUp()
     {
-        $this->service = new class($this->mockFlow = \Mockery::instanceMock(Flow::class)) extends BaseService {
-            use HasPagination;
-        };
+        $this->service = new MockPagination($this->mockFlow = \Mockery::instanceMock(Flow::class));
 
         $logger = \Mockery::instanceMock(LoggerInterface::class);
 

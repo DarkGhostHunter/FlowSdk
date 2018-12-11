@@ -17,7 +17,7 @@ class CustomerResource extends BasicResource
      * @param string|null $urlReturn
      * @return bool
      */
-    public function registerCard(string $urlReturn = null)
+    public function registerCard($urlReturn = null)
     {
         if ($this->exists) {
             return $this->service->registerCard($this->getId(), $urlReturn);
@@ -61,10 +61,14 @@ class CustomerResource extends BasicResource
      * @param string $value
      * @return mixed
      */
-    public function reverseCharge(string $idType, string $value)
+    public function reverseCharge($idType, $value)
     {
         if ($this->exists) {
-            return $this->service->reverseCharge($idType ?? 'customerOrder', $value);
+            return $this->service->reverseCharge(
+                $idType !== null
+                    ? $idType : 'customerOrder'
+                , $value
+            );
         }
         return false;
     }
@@ -76,7 +80,7 @@ class CustomerResource extends BasicResource
      * @param array|null $options
      * @return bool|\DarkGhostHunter\FlowSdk\Responses\PagedResponse
      */
-    public function getChargesPage(string $page, array $options = null)
+    public function getChargesPage($page, array $options = null)
     {
         if ($this->exists) {
             return $this->service->getChargesPage($this->getId(), $page, $options);

@@ -37,7 +37,7 @@ class Processor
      * @param array $parameters
      * @return array|string
      */
-    public function prepare(string $method, array $parameters)
+    public function prepare($method, array $parameters)
     {
         // Delete any empty key
         $parameters = $this->deleteEmptyKeys($parameters);
@@ -168,7 +168,7 @@ class Processor
      * @param string $signable
      * @return string
      */
-    protected function makeSignature(string $signable)
+    protected function makeSignature($signable)
     {
         return hash_hmac('sha256', $signable, $this->credentials->secret);
     }

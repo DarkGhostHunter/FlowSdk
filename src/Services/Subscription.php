@@ -79,7 +79,7 @@ class Subscription extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|\DarkGhostHunter\FlowSdk\Resources\BasicResource
      * @throws \Exception
      */
-    public function cancel(string $id, bool $atPeriodEnd)
+    public function cancel($id, $atPeriodEnd)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Cancelling Subscription $id" . ($atPeriodEnd ? ' at period end.' : '.'));
@@ -104,7 +104,7 @@ class Subscription extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource
      * @throws \Exception
      */
-    public function addCoupon(string $subscriptionId, string $couponId)
+    public function addCoupon($subscriptionId, $couponId)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Adding Coupon $couponId to $subscriptionId");
@@ -128,7 +128,7 @@ class Subscription extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource
      * @throws \Exception
      */
-    public function removeCoupon(string $subscriptionId)
+    public function removeCoupon($subscriptionId)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Removing Coupons from $subscriptionId");

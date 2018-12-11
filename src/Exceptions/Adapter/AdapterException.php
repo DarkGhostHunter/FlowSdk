@@ -10,7 +10,7 @@ class AdapterException extends Exception implements FlowSdkException
 {
     protected $message = 'Flow did not respond successfully.';
 
-    public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
+    public function __construct($message = "", $code = 0, $previous = null)
     {
 
         if (!empty($message)) {

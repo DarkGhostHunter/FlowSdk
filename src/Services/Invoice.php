@@ -74,7 +74,7 @@ class Invoice extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|\DarkGhostHunter\FlowSdk\Resources\BasicResource|InvoiceResource
      * @throws \Exception
      */
-    public function cancel(string $id)
+    public function cancel($id)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Cancelling Invoice $id");

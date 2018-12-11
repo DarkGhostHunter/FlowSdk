@@ -77,8 +77,9 @@ abstract class BaseService implements ServiceInterface
     {
         $this->flow = $flow;
 
-        $this->endpoint = $this->endpoint ??
-            lcfirst(substr(strrchr(get_class($this), '\\'), 1));
+        $this->endpoint = isset($this->endpoint)
+            ? $this->endpoint
+            : lcfirst(substr(strrchr(get_class($this), '\\'), 1));
     }
 
     /*
@@ -102,7 +103,7 @@ abstract class BaseService implements ServiceInterface
      *
      * @param string $id
      */
-    public function setId(string $id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -118,7 +119,7 @@ abstract class BaseService implements ServiceInterface
     /**
      * @inheritdoc
      */
-    public function setEndpoint(string $endpoint)
+    public function setEndpoint($endpoint)
     {
         $this->endpoint = $endpoint;
     }
@@ -158,9 +159,11 @@ abstract class BaseService implements ServiceInterface
     /**
      * @inheritdoc
      */
-    public function can(string $method)
+    public function can($method)
     {
-        return $this->permittedActions[$method] ?? false;
+        return isset($this->permittedActions[$method])
+            ? $this->permittedActions[$method]
+            : false;
     }
 
     /*

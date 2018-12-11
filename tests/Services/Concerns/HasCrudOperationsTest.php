@@ -10,6 +10,13 @@ use DarkGhostHunter\FlowSdk\Services\BaseService;
 use DarkGhostHunter\FlowSdk\Services\Concerns\HasCrudOperations;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Tests\Services\Concerns\Mocks\MockCantCommit;
+use Tests\Services\Concerns\Mocks\MockCantCreate;
+use Tests\Services\Concerns\Mocks\MockCantDelete;
+use Tests\Services\Concerns\Mocks\MockCantUpdate;
+use Tests\Services\Concerns\Mocks\MockCommit;
+use Tests\Services\Concerns\Mocks\MockGet;
+use Tests\Services\Concerns\Mocks\MockHasCrudOperations;
 
 class HasCrudOperationsTest extends TestCase
 {
@@ -26,9 +33,7 @@ class HasCrudOperationsTest extends TestCase
 
     protected function setUp()
     {
-        $this->service = new class($this->mockFlow = \Mockery::instanceMock(Flow::class)) extends BaseService {
-            use HasCrudOperations;
-        };
+        $this->service = new MockHasCrudOperations($this->mockFlow = \Mockery::instanceMock(Flow::class));
 
         $this->service->setId('serviceId');
 
@@ -87,12 +92,7 @@ class HasCrudOperationsTest extends TestCase
 
     public function testCommit()
     {
-        $service = new class($this->mockFlow) extends BaseService {
-            use HasCrudOperations;
-            protected $permittedActions = [
-                'commit' => true
-            ];
-        };
+        $service = new MockCommit($this->mockFlow);
 
         $this->mockFlow->expects('send')
             ->with('post', \Mockery::type('string'), ['foo' => 'bar'])
@@ -151,12 +151,7 @@ class HasCrudOperationsTest extends TestCase
     {
         $this->expectException(\BadMethodCallException::class);
 
-        $this->service = new class($this->mockFlow) extends BaseService {
-            use HasCrudOperations;
-            protected $permittedActions = [
-                'get'    => false,
-            ];
-        };
+        $this->service = new MockGet($this->mockFlow);
 
         $this->service->get('id');
 
@@ -166,12 +161,7 @@ class HasCrudOperationsTest extends TestCase
     {
         $this->expectException(\BadMethodCallException::class);
 
-        $this->service = new class($this->mockFlow) extends BaseService {
-            use HasCrudOperations;
-            protected $permittedActions = [
-                'commit'    => false,
-            ];
-        };
+        $this->service = new MockCantCommit($this->mockFlow);
 
         $this->service->commit([]);
 
@@ -181,12 +171,7 @@ class HasCrudOperationsTest extends TestCase
     {
         $this->expectException(\BadMethodCallException::class);
 
-        $this->service = new class($this->mockFlow) extends BaseService {
-            use HasCrudOperations;
-            protected $permittedActions = [
-                'create'    => false,
-            ];
-        };
+        $this->service = new MockCantCreate($this->mockFlow);
 
         $this->service->create([]);
 
@@ -196,12 +181,7 @@ class HasCrudOperationsTest extends TestCase
     {
         $this->expectException(\BadMethodCallException::class);
 
-        $this->service = new class($this->mockFlow) extends BaseService {
-            use HasCrudOperations;
-            protected $permittedActions = [
-                'update'    => false,
-            ];
-        };
+        $this->service = new MockCantUpdate($this->mockFlow);
 
         $this->service->update([]);
 
@@ -211,12 +191,7 @@ class HasCrudOperationsTest extends TestCase
     {
         $this->expectException(\BadMethodCallException::class);
 
-        $this->service = new class($this->mockFlow) extends BaseService {
-            use HasCrudOperations;
-            protected $permittedActions = [
-                'delete'    => false,
-            ];
-        };
+        $this->service = new MockCantDelete($this->mockFlow);
 
         $this->service->delete('id');
 

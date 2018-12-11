@@ -48,7 +48,7 @@ class Settlement extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource
      * @throws \Exception
      */
-    public function getByDate(string $date)
+    public function getByDate($date)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Retrieving Settlement by Date $date");

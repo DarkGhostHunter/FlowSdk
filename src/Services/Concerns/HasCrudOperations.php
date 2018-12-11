@@ -45,9 +45,15 @@ trait HasCrudOperations
      */
     protected function performCommit(array $attributes)
     {
+        $method = 'create';
+
+        if (isset($this->verbsMap['commit'])) {
+            $method = $this->verbsMap['commit'];
+        }
+
         return $this->flow->send(
             'post',
-            $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['commit'] ?? 'create'),
+            $this->endpoint . '/' . $method,
             $attributes
         );
     }
@@ -80,9 +86,17 @@ trait HasCrudOperations
      */
     protected function performCreate(array $attributes, array $options = null)
     {
+        $method = 'create';
+
+        if (isset($options['method'])) {
+            $method = $options['method'];
+        } elseif (isset($this->verbsMap['create'])) {
+            $method = $this->verbsMap['create'];
+        }
+
         return $this->flow->send(
             'post',
-            $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['create'] ?? 'create'),
+            $this->endpoint . '/' . $method,
             $attributes
         );
     }
@@ -94,7 +108,7 @@ trait HasCrudOperations
      * @param null $options
      * @return mixed
      */
-    public function get(string $id, $options = null)
+    public function get($id, $options = null)
     {
         if ($this->can('get')) {
             $this->flow->getLogger()->debug("Retrieving Resource: $this->id => $id");
@@ -113,11 +127,19 @@ trait HasCrudOperations
      * @param array|null $options
      * @return array
      */
-    protected function performGet(string $key, string $id, array $options = null)
+    protected function performGet($key, $id, array $options = null)
     {
+        $method = 'get';
+
+        if (isset($options['method'])) {
+            $method = $options['method'];
+        } elseif (isset($this->verbsMap['get'])) {
+            $method = $this->verbsMap['get'];
+        }
+
         return $this->flow->send(
             'get',
-            $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['get'] ?? 'get'),
+            $this->endpoint . '/' . $method,
             [$key => $id]
         );
     }
@@ -161,9 +183,17 @@ trait HasCrudOperations
      */
     protected function performUpdate(array $attributes, array $options = null)
     {
+        $method = 'edit';
+
+        if (isset($options['method'])) {
+            $method = $options['method'];
+        } elseif (isset($this->verbsMap['update'])) {
+            $method = $this->verbsMap['update'];
+        }
+
         return $this->flow->send(
             'post',
-            $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['update'] ?? 'edit'),
+            $this->endpoint . '/' . $method,
             $attributes
         );
     }
@@ -174,7 +204,7 @@ trait HasCrudOperations
      * @param string $id
      * @return mixed
      */
-    public function delete(string $id)
+    public function delete($id)
     {
         if ($this->can('delete')) {
 
@@ -195,11 +225,20 @@ trait HasCrudOperations
      * @param array|null $options
      * @return array
      */
-    protected function performDelete(string $key, string $id, array $options = null)
+    protected function performDelete($key, $id, array $options = null)
     {
+
+        $method = 'delete';
+
+        if (isset($options['method'])) {
+            $method = $options['method'];
+        } elseif (isset($this->verbsMap['delete'])) {
+            $method = $this->verbsMap['delete'];
+        }
+
         return $this->flow->send(
             'post',
-            $this->endpoint . '/' . ($options['method'] ?? $this->verbsMap['delete'] ?? 'delete'),
+            $this->endpoint . '/' . $method,
             [$key => $id]
         );
     }

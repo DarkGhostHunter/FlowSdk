@@ -70,7 +70,7 @@ class Customer extends BaseService
      * @return bool|BasicResponse
      * @throws \Exception
      */
-    public function registerCard(string $customerId, string $urlReturn = null)
+    public function registerCard($customerId, $urlReturn = null)
     {
         $this->flow->getLogger()->debug("Registering Card for $customerId, returns to $urlReturn");
 
@@ -79,7 +79,7 @@ class Customer extends BaseService
                 $this->endpoint . '/register',
                 [
                     'customerId' => $customerId,
-                    'url_return' => $urlReturn ?? $this->flow->getReturnUrls('card.url_return'),
+                    'url_return' => $urlReturn ?: $this->flow->getReturnUrls('card.url_return'),
                 ]
             )
         );
@@ -92,7 +92,7 @@ class Customer extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|\DarkGhostHunter\FlowSdk\Resources\BasicResource|CustomerResource
      * @throws \Exception
      */
-    public function getCard(string $token)
+    public function getCard($token)
     {
         // Lof Debug
         $this->flow->getLogger()->debug("Retrieving Card with token $token");
@@ -117,7 +117,7 @@ class Customer extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|BasicResource|CustomerResource
      * @throws \Exception
      */
-    public function unregisterCard(string $customerId)
+    public function unregisterCard($customerId)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Unregistering Card for $customerId");
@@ -185,7 +185,7 @@ class Customer extends BaseService
      * @return BasicResponse
      * @throws \Exception
      */
-    public function reverseCharge(string $idType, string $value)
+    public function reverseCharge($idType, $value)
     {
         // Log Debug
         $this->flow->getLogger()->debug("Reversing Charge: $idType, $value");
@@ -210,11 +210,11 @@ class Customer extends BaseService
      * @return \DarkGhostHunter\FlowSdk\Responses\PagedResponse
      * @throws \Exception
      */
-    public function getChargesPage(string $customerId, int $page, array $options = null)
+    public function getChargesPage($customerId, $page, array $options = null)
     {
         $pagedResponse = $this->getPage(
             $page,
-            array_merge($options ?? [], [
+            array_merge($options ?: [], [
                 'method' => 'getCharges',
                 'customerId' => $customerId
             ])

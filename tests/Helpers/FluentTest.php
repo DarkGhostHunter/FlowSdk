@@ -32,12 +32,10 @@ class FluentTest extends TestCase
 
     public function testGetHidden()
     {
-        $fluent = new class([
+        $fluent = new MockFluentHiddenAttributes([
             'hidden' => true,
             'nothidden' => 'nothiddenValue'
-        ]) extends Fluent {
-            protected $hidden = ['hidden'];
-        };
+        ]);
 
         $this->assertEquals(['hidden'], $fluent->getHidden());
         $this->assertArrayNotHasKey('hidden', $fluent->toArray());
@@ -63,14 +61,10 @@ class FluentTest extends TestCase
 
     public function testAttributesRequired()
     {
-        $fluent = new class([
+        $fluent = new MockFluentRequiredAttributes([
             'foo' => 'bar',
             'key' => 'value'
-        ]) extends Fluent {
-            protected $required = [
-                'foo'
-            ];
-        };
+        ]);
 
         $this->assertEquals('bar', $fluent->foo);
         $this->assertEquals('value', $fluent->key);
@@ -80,26 +74,16 @@ class FluentTest extends TestCase
     {
         $this->expectException(AttributesRequiredException::class);
 
-        $fluent = new class([
-            'foo' => 'bar',
+        $fluent = new MockFluentRequiredAttributes([
             'notKey' => 'value',
-        ]) extends Fluent {
-            protected $required = [
-                'key'
-            ];
-        };
+        ]);
     }
 
     public function testAttributesOnly()
     {
-        $fluent = new class([
+        $fluent = new MockFluentRequiredOnly([
             'foo' => 'bar',
-        ]) extends Fluent {
-            protected $required = [
-                'foo'
-            ];
-            protected $restrained = true;
-        };
+        ]);
 
         $this->assertEquals('bar', $fluent->foo);
     }
@@ -108,15 +92,10 @@ class FluentTest extends TestCase
     {
         $this->expectException(AttributesOnlyException::class);
 
-        $fluent = new class([
+        $fluent = new MockFluentRequiredOnly([
             'foo' => 'bar',
             'key' => 'value',
-        ]) extends Fluent {
-            protected $required = [
-                'key'
-            ];
-            protected $restrained = true;
-        };
+        ]);
     }
 
     public function testOffsetSet()
@@ -159,16 +138,9 @@ class FluentTest extends TestCase
 
     public function testGetMerge()
     {
-        $fluent = new class([
+        $fluent = new MockFluentMerge([
             'foo' => 'bar'
-        ]) extends Fluent {
-            protected $merge = ['toMerge'];
-
-            protected $toMerge = [
-                'key' => 'value',
-                'foo' => 'notBar',
-            ];
-        };
+        ]);
 
         $this->assertEquals(['toMerge'], $fluent->getMerge());
 
@@ -202,12 +174,7 @@ class FluentTest extends TestCase
 
     public function testGetRawAttributes()
     {
-        $fluent = new class($array = ['foo' => 'bar']) extends Fluent {
-            public function getFooAttribute()
-            {
-                return 'notBar';
-            }
-        };
+        $fluent = new MockFluentRawAttribute($array = ['foo' => 'bar']);
 
         $this->assertEquals($array, $fluent->getRawAttributes());
     }
@@ -262,16 +229,7 @@ class FluentTest extends TestCase
 
     public function testGetAttributes()
     {
-        $fluent = new class($array = ['foo' => 'bar', 'notFoo' => 'notBar']) extends Fluent {
-            public function getKeyAttribute()
-            {
-                return 'value';
-            }
-            public function getNotFooAttribute()
-            {
-                return 'lol';
-            }
-        };
+        $fluent = new MockFluentAttribute($array = ['foo' => 'bar', 'notFoo' => 'notBar']);
 
         $this->assertEquals(['foo' => 'bar', 'notFoo' => 'lol'], $fluent->toArray());
         $this->assertEquals('lol', $fluent->toArray()['notFoo']);
@@ -308,16 +266,7 @@ class FluentTest extends TestCase
 
     public function testSetRawAttributes()
     {
-        $fluent = new class extends Fluent {
-            public function setKeyAttribute()
-            {
-                return 'noValue';
-            }
-            public function setFooAttribute()
-            {
-                return 'noBar';
-            }
-        };
+        $fluent = new MockFluentSetRawAttribute;
 
         $fluent->setRawAttributes($array = [
             'key' => 'value',
@@ -331,16 +280,7 @@ class FluentTest extends TestCase
 
     public function testGetRawAttribute()
     {
-        $fluent = new class($array = ['foo' => 'bar', 'notFoo' => 'notBar']) extends Fluent {
-            public function getKeyAttribute()
-            {
-                return 'value';
-            }
-            public function getNotFooAttribute()
-            {
-                return 'lol';
-            }
-        };
+        $fluent = new MockFluentGetRawAttribute($array = ['foo' => 'bar', 'notFoo' => 'notBar']);
 
         $this->assertEquals('bar', $fluent->getRawAttribute('foo'));
     }

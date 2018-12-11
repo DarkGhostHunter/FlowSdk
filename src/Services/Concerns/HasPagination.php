@@ -27,14 +27,14 @@ trait HasPagination
      * @return PagedResponse
      * @throws \Exception
      */
-    public function getPage(int $page, array $options = null)
+    public function getPage($page, array $options = null)
     {
         $params = [
             'start' => ($page * $this->perPage) - $this->perPage,
-            'limit' => $this->perPage ?? 10,
+            'limit' => $this->perPage ?: 10,
         ];
 
-        foreach ($options ?? [] as $key => $option) {
+        foreach ($options ?: [] as $key => $option) {
             if ($key !== 'method') {
                 $params[$key] = $option;
             }
@@ -46,17 +46,25 @@ trait HasPagination
             . "$page, $this->id"
         );
 
+        $method = 'list';
+
+        if (isset($options['method'])) {
+            $method = $options['method'];
+        } elseif (isset($this->paginationMethod)) {
+            $method = $this->paginationMethod;
+        }
+
         // Get the BasicResponse from the Adapter
         $response = $this->flow->send(
             'get',
-            $this->endpoint . '/' . ($options['method'] ?? $this->paginationMethod ?? 'list'),
+            $this->endpoint . '/' . $method,
             $params
         );
 
         $items = [];
 
         // For each item in the `data` key, transform it as this Service Resource or the class
-        foreach ($response['data'] ?? [] as $item) {
+        foreach ($response['data'] ?: [] as $item) {
             $items[] = $this->make($item);
         }
 
@@ -84,7 +92,7 @@ trait HasPagination
      *
      * @param int $perPage
      */
-    public function setPerPage(int $perPage)
+    public function setPerPage($perPage)
     {
         $this->perPage = $perPage;
     }

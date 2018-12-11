@@ -42,7 +42,7 @@ interface ResourceInterface
      * @param string $type
      * @return void
      */
-    public function setType(string $type);
+    public function setType($type);
 
     /**
      * Returns the saved BasicResponse from Flow commitment
@@ -72,7 +72,7 @@ interface ResourceInterface
      * @param bool $exists
      * @return void
      */
-    public function setExists(bool $exists);
+    public function setExists($exists);
 
 
 

@@ -37,7 +37,9 @@ class GuzzleAdapter implements AdapterInterface
     {
         $this->flow = $flow;
         $this->credentials = $flow->getCredentials();
-        $this->client = new Client($options ?? []);
+        $this->client = new Client(
+            isset($options) ? $options : []
+        );
     }
 
     /**
@@ -66,7 +68,7 @@ class GuzzleAdapter implements AdapterInterface
      * @throws TransactionException
      * @throws AdapterException
      */
-    public function post(string $endpoint, array $data): array
+    public function post($endpoint, array $data)
     {
 
         $path = parse_url($endpoint, PHP_URL_PATH);
@@ -98,7 +100,7 @@ class GuzzleAdapter implements AdapterInterface
      * @throws AdapterException
      * @throws TransactionException
      */
-    public function get(string $endpoint): array
+    public function get($endpoint)
     {
 
         $path = parse_url($endpoint, PHP_URL_PATH);
@@ -127,7 +129,7 @@ class GuzzleAdapter implements AdapterInterface
      * @param string $message
      * @return void
      */
-    public function logInfo(string $message)
+    public function logInfo($message)
     {
         $this->flow->getLogger()->info($message);
     }
@@ -138,7 +140,7 @@ class GuzzleAdapter implements AdapterInterface
      * @param string $message
      * @return void
      */
-    public function logError(string $message)
+    public function logError($message)
     {
         $this->flow->getLogger()->error($message);
     }
@@ -149,7 +151,7 @@ class GuzzleAdapter implements AdapterInterface
      * @param string $message
      * @return void
      */
-    public function logDebug(string $message)
+    public function logDebug($message)
     {
         $this->flow->getLogger()->debug($message);
     }

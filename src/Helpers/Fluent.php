@@ -74,7 +74,10 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
      */
     protected function checkRequiredAndRestrained(array $attributes)
     {
-        $required = count($this->required ?? []);
+        $required = count(
+            $this->required !== null
+            ? $this->required: []
+        );
 
         // First, check if we're receiving the required attributes by just
         // simply counting the required attributes, and comparing it to
@@ -121,7 +124,7 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
      * @param null $default
      * @return mixed
      */
-    public function get(string $attribute, $default = null)
+    public function get($attribute, $default = null)
     {
         // Return the attribute using the getters if set
         if (method_exists($this, $method = 'get' . ucfirst($attribute) . 'Attribute')) {
@@ -147,7 +150,7 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
      * @param string $name
      * @param $attribute
      */
-    public function set(string $name, $attribute)
+    public function set($name, $attribute)
     {
         // Use the setter if set, and return.
         if (method_exists($this, $method = 'set' . ucfirst($name) . 'Attribute')) {
@@ -196,7 +199,7 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
      * @param string $attribute
      * @return mixed
      */
-    public function getRawAttribute(string $attribute)
+    public function getRawAttribute($attribute)
     {
         return $this->attributes[$attribute];
     }
@@ -335,7 +338,7 @@ class Fluent implements ArrayAccess, JsonSerializable, Countable
      * @return Fluent|$this
      * @throws \Exception
      */
-    public static function fromJson(string $json)
+    public static function fromJson($json)
     {
         return new static(json_decode($json, true));
     }

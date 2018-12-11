@@ -7,6 +7,8 @@ use DarkGhostHunter\FlowSdk\Contracts\ServiceInterface;
 use DarkGhostHunter\FlowSdk\Flow;
 use DarkGhostHunter\FlowSdk\Services\BaseService;
 use PHPUnit\Framework\TestCase;
+use Tests\Services\Mocks\MockBaseServiceGetEditableAttributes;
+use Tests\Services\Mocks\MockBaseService;
 
 class BaseServiceTest extends TestCase
 {
@@ -24,9 +26,7 @@ class BaseServiceTest extends TestCase
     {
         $this->flow = \Mockery::instanceMock(Flow::class);
 
-        $this->service = new class ($this->flow) extends BaseService {
-            protected $endpoint = 'endpoint';
-        };
+        $this->service = new MockBaseService($this->flow);
     }
 
     public function testGetId()
@@ -42,13 +42,6 @@ class BaseServiceTest extends TestCase
     public function testGetVerbsMap()
     {
         $this->assertInternalType('array', $this->service->getVerbsMap());
-    }
-
-    public function test__construct()
-    {
-        $service = new class (\Mockery::instanceMock(Flow::class)) extends BaseService {};
-
-        $this->assertInstanceOf(BaseService::class, $service);
     }
 
     public function testSetId()
@@ -85,9 +78,7 @@ class BaseServiceTest extends TestCase
     {
         $this->assertNull($this->service->getEditableAttributes());
 
-        $service = new class ($this->flow) extends BaseService {
-            protected $editableAttributes = ['foo', 'bar'];
-        };
+        $service = new MockBaseServiceGetEditableAttributes($this->flow);
 
         $this->assertEquals(['foo', 'bar'], $service->getEditableAttributes());
     }

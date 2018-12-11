@@ -38,7 +38,7 @@ interface AdapterInterface
      * @param array $data
      * @return array
      */
-    public function post(string $endpoint, array $data) : array;
+    public function post($endpoint, array $data);
 
     /**
      * Issues a HTTP GET Request to Flow API
@@ -46,7 +46,7 @@ interface AdapterInterface
      * @param string $endpoint
      * @return array
      */
-    public function get(string $endpoint) : array;
+    public function get($endpoint);
 
 
     /**
@@ -55,7 +55,7 @@ interface AdapterInterface
      * @param string $message
      * @return void
      */
-    public function logInfo(string $message);
+    public function logInfo($message);
 
     /**
      * Logs an Error
@@ -63,7 +63,7 @@ interface AdapterInterface
      * @param string $message
      * @return void
      */
-    public function logError(string $message);
+    public function logError($message);
 
     /**
      * Logs a Debug
@@ -71,6 +71,6 @@ interface AdapterInterface
      * @param string $message
      * @return void
      */
-    public function logDebug(string $message);
+    public function logDebug($message);
 
 }

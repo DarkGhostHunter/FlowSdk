@@ -12,7 +12,7 @@ trait IsArrayAccessible
      */
     public function offsetExists($offset)
     {
-        return $this->attributes[$offset] ?? false;
+        return isset($this->attributes[$offset]);
     }
 
     /**
@@ -23,7 +23,7 @@ trait IsArrayAccessible
      */
     public function offsetGet($offset)
     {
-        return $this->attributes[$offset] ?? null;
+        return isset($this->attributes[$offset]) ? $this->attributes[$offset] : null;
     }
 
     /**
@@ -34,7 +34,7 @@ trait IsArrayAccessible
      */
     public function offsetSet($offset, $value)
     {
-        $this->attributes[$offset] = $value ?? null;
+        $this->attributes[$offset] = $value !== null ? $value : null;
     }
 
     /**

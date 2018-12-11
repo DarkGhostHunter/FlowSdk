@@ -90,7 +90,7 @@ class BasicResource extends Fluent implements ResourceInterface
      */
     protected function bootExistence()
     {
-        $this->exists = $this->attributes['status'] ?? false;
+        $this->exists = isset($this->attributes['status']) ? $this->attributes['status'] : false;
     }
 
     /*
@@ -137,7 +137,7 @@ class BasicResource extends Fluent implements ResourceInterface
      * @param string $type
      * @return void
      */
-    public function setType(string $type)
+    public function setType($type)
     {
         $this->type = $type;
     }
@@ -158,7 +158,7 @@ class BasicResource extends Fluent implements ResourceInterface
      * @param bool $exists
      * @return void
      */
-    public function setExists(bool $exists = true)
+    public function setExists($exists = true)
     {
         $this->exists = $exists;
     }
@@ -207,7 +207,9 @@ class BasicResource extends Fluent implements ResourceInterface
      */
     public function getId()
     {
-        return $this->attributes[$this->service->getId()] ?? null;
+        return isset($this->attributes[$this->service->getId()])
+            ? $this->attributes[$this->service->getId()]
+            : null;
     }
 
     /*

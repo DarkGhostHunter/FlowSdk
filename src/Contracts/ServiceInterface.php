@@ -27,7 +27,7 @@ interface ServiceInterface
      * @param string $endpoint
      * @return mixed
      */
-    public function setEndpoint(string $endpoint);
+    public function setEndpoint($endpoint);
 
     /**
      * Get the map for every action in the resource API
@@ -64,7 +64,7 @@ interface ServiceInterface
      * @param string $method
      * @return bool|mixed
      */
-    public function can(string $method);
+    public function can($method);
 
     /**
      * Makes a Resource for the Service (it doesn't persist it)
