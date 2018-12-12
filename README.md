@@ -98,7 +98,7 @@ If you're lost and want some kind of quick prototyping, or you just want to know
 
 ## PHP 5.6 Compatibility
 
-Check out the [`legacy` branch](tree/legacy) for PHP 5.6 compatibility. Since it's considered *legacy*, there is no promises on keeping it up-to-date.
+Check out the [`legacy` branch](https://github.com/DarkGhostHunter/FlowSdk/tree/legacy) for PHP 5.6 compatibility. Since it's considered *legacy*, there is no promises on keeping it up-to-date.
 
 Consider migrating to PHP 7.1 and above as soon as possible. PHP 5.6 and below, as well PHP 7.0 and below, will be no longer be supported by January 1th, 2019. **Security releases won't be available for old PHP version after that date**.[¹](http://php.net/supported-versions.php).
 
