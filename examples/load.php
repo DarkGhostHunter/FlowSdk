@@ -21,15 +21,19 @@ try {
 
 /** Just to have the same Flow instance available globally */
 class FlowInstance {
+
     static $instance;
+
     public static function getFlow()
     {
-        return self::$instance
-            ? self::$instance
-            : self::$instance = Flow::make('sandbox', [
-                'apiKey' => getenv('FLOW_SANDBOX_API_KEY'),
-                'secret' => getenv('FLOW_SANDBOX_SECRET'),
-            ], new Logger(__DIR__ . '/logs', LogLevel::DEBUG));
+        if (self::$instance) return self::$instance;
+
+        $flow = Flow::make('sandbox', [
+            'apiKey' => getenv('FLOW_SANDBOX_API_KEY'),
+            'secret' => getenv('FLOW_SANDBOX_SECRET'),
+        ], new Logger(__DIR__ . '/logs', LogLevel::DEBUG));
+
+        return self::$instance = $flow;
     }
 }
 

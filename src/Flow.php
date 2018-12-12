@@ -379,18 +379,16 @@ class Flow
     public static function make(string $environment, array $credentials, LoggerInterface $logger = null)
     {
         // If no logger is passed, we will use the null logger
-        $flow = new static(
-            $logger ?? new NullLogger()
-        );
+        $flow = new static($logger ?? new NullLogger());
 
         // Set the credentials, or throw an Exception if there is none
         $flow->setCredentials($credentials);
 
-        // Set the default Guzzle Adapter
-        $flow->setAdapter(new GuzzleAdapter($flow));
-
         // Set the production environment if set explicitly
         $flow->isProduction($environment === 'production');
+
+        // Set the default Guzzle Adapter
+        $flow->setAdapter(new GuzzleAdapter($flow));
 
         // Return a new instance of Flow
         return $flow;

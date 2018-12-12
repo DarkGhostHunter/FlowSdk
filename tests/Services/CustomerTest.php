@@ -110,6 +110,31 @@ class CustomerTest extends TestCase
         );
     }
 
+    public function testRegisterCardWithDefaultUrl()
+    {
+        $this->flow->expects('getReturnUrls')
+            ->with('card.url_return')
+            ->andReturn('http://myapp.com/card/default-return-url');
+
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), [
+                'customerId' => 'customerId',
+                'url_return' => 'http://myapp.com/card/default-return-url',
+            ])
+            ->andReturn([
+                'url' => $url = 'https://www.flow.cl/app/webpay/disclaimer.php',
+                'token' => $token = '41097C28B5BD78C77F589FE4BC59E18AC333F9EU',
+            ]);
+
+        $response = $this->service->registerCard('customerId');
+
+        $this->assertInstanceOf(BasicResponse::class, $response);
+        $this->assertEquals(
+            $url . '?token=' . $token,
+            $response->getUrl()
+        );
+    }
+
     public function testUnregisterCard()
     {
         $this->flow->expects('send')
