@@ -6,6 +6,7 @@ use DarkGhostHunter\FlowSdk\Responses\BasicResponse;
 
 /**
  * Trait HasCrudOperations
+ *
  * @package DarkGhostHunter\FlowSdk\Services\Concerns
  */
 trait HasCrudOperations
@@ -91,10 +92,9 @@ trait HasCrudOperations
      * Gets the Resource
      *
      * @param string $id
-     * @param null $options
      * @return mixed
      */
-    public function get(string $id, $options = null)
+    public function get(string $id)
     {
         if ($this->can('get')) {
             $this->flow->getLogger()->debug("Retrieving Resource: $this->id => $id");
