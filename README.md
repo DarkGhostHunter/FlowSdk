@@ -19,7 +19,7 @@ With Flow, you don't have to register in each service and comply with each of th
 * ext-openssl
 * ext-curl
 
-> If you need PHP 5 compatibility, you can check the [`legacy` branch](#php-5-compatibility).
+> If you need PHP 5.6 compatibility, you can check the [`legacy` branch](#php-56-compatibility).
 
 ## Install
 
