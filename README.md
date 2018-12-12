@@ -19,7 +19,7 @@ With Flow, you don't have to register in each service and comply with each of th
 * ext-openssl
 * ext-curl
 
-> [PHP 5 will never be supported](#php-5-compatibility).
+> If you need PHP 5 compatibility, you can check the [`legacy` branch](#php-5-compatibility).
 
 ## Install
 
@@ -98,13 +98,9 @@ If you're lost and what some kind of prototyping, or just want to know how a tra
 
 ## PHP 5 Compatibility
 
-This package will never be compatible with PHP 7.0 or below. Reasons are follows:
+Check out the [`legacy` branch](https://github.com/DarkGhostHunter/FlowSdk/tree/legacy) for PHP 5 compatibility. Since it's considered legacy, there is no promises to keep it up-to-date.
 
-* PHP 5.6 and below, as well PHP 7.0 and below, will no longer be supported by January 1th, 2019. **Security releases won't come after this date**.[¹](http://php.net/supported-versions.php)
-* PHP 5 aggravates maintainability of this package in the short and long term due to breaking changes in language and hassle on some functions behaviour.
-* PHP 5 does not perform as well as PHP 7 and above.
-
-If you need PHP 5 compatibility, you can fork this package at your own will, or make a PR to a theorical "legacy".
+Consider migrating to PHP 7.1 and above. PHP 5.6 and below, as well PHP 7.0 and below, will be no longer be supported by January 1th, 2019. **Security releases won't come after this date**.[¹](http://php.net/supported-versions.php).
 
 ## License
 
