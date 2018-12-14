@@ -8,7 +8,7 @@ use DarkGhostHunter\FlowSdk\Helpers\Fluent;
 class Processor
 {
     /** @var Fluent */
-    protected $credentials;
+    protected $flow;
 
     /** @var string */
     protected $webhookSecret;
@@ -26,8 +26,7 @@ class Processor
      */
     public function __construct(Flow $flow)
     {
-        $this->credentials = $flow->getCredentials();
-        $this->webhookSecret = $flow->getWebhookSecret();
+        $this->flow = $flow;
     }
 
     /**
@@ -43,7 +42,7 @@ class Processor
         $parameters = $this->deleteEmptyKeys($parameters);
 
         // Add the API Key
-        $parameters['apiKey'] = $this->credentials->apiKey;
+        $parameters['apiKey'] = $this->flow->getCredentials()->apiKey;
 
         // Sort the parameters
         ksort($parameters);
@@ -152,11 +151,11 @@ class Processor
      */
     protected function appendSecretToWebhook($key, $value)
     {
-        if ($this->webhookSecret
+        if (($secret = $this->flow->getWebhookSecret())
             && in_array($key, ['urlConfirmation', 'urlCallBack', 'urlCallback'])
             && !strpos($value, 'secret=')) {
 
-            return $value . (strpos($value, '?') ? '&' : '?') . 'secret=' . $this->webhookSecret;
+            return $value . (strpos($value, '?') ? '&' : '?') . 'secret=' . $secret;
         }
 
         return $value;
@@ -170,6 +169,6 @@ class Processor
      */
     protected function makeSignature($signable)
     {
-        return hash_hmac('sha256', $signable, $this->credentials->secret);
+        return hash_hmac('sha256', $signable, $this->flow->getCredentials()->secret);
     }
 }

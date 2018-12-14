@@ -386,11 +386,11 @@ class Flow
         // Set the credentials, or throw an Exception if there is none
         $flow->setCredentials($credentials);
 
-        // Set the default Guzzle Adapter
-        $flow->setAdapter(new GuzzleAdapter($flow));
-
         // Set the production environment if set explicitly
         $flow->isProduction($environment === 'production');
+
+        // Set the default Guzzle Adapter
+        $flow->setAdapter(new GuzzleAdapter($flow));
 
         // Return a new instance of Flow
         return $flow;
