@@ -20,6 +20,26 @@ trait HasPagination
     protected $perPage = 10;
 
     /**
+     * Get the items to retrieve per page
+     *
+     * @return int
+     */
+    public function getPerPage()
+    {
+        return $this->perPage;
+    }
+
+    /**
+     * Sets the items to retrieve per page
+     *
+     * @param int $perPage
+     */
+    public function setPerPage(int $perPage)
+    {
+        $this->perPage = $perPage;
+    }
+
+    /**
      * Gets a Page of Resources from the Service
      *
      * @param int $page
@@ -29,22 +49,12 @@ trait HasPagination
      */
     public function getPage(int $page, array $options = null)
     {
-        $params = [
-            'start' => ($page * $this->perPage) - $this->perPage,
-            'limit' => $this->perPage ?? 10,
-        ];
 
-        foreach ($options ?? [] as $key => $option) {
-            if ($key !== 'method') {
-                $params[$key] = $option;
-            }
-        }
+        $params = $this->preparePageParams($page, $options ?? []);
 
         // Log Debug
-        $this->flow->getLogger()->debug("Retrieving Resource List:" .
-            lcfirst(substr(strrchr(get_class($this), '\\'), 1))
-            . "$page, $this->id"
-        );
+        $this->flow->getLogger()
+            ->debug("Retrieving Resource List: $this->endpoint, $page, $this->id");
 
         // Get the BasicResponse from the Adapter
         $response = $this->flow->send(
@@ -69,24 +79,20 @@ trait HasPagination
         return (new PagedResponse($response))->page($page);
     }
 
-    /**
-     * Get the items to retrieve per page
-     *
-     * @return int
-     */
-    public function getPerPage()
+    protected function preparePageParams(int $page, array $options)
     {
-        return $this->perPage;
-    }
+        $params = [
+            'start' => ($page * $this->perPage) - $this->perPage,
+            'limit' => $this->perPage ?? 10,
+        ];
 
-    /**
-     * Sets the items to retrieve per page
-     *
-     * @param int $perPage
-     */
-    public function setPerPage(int $perPage)
-    {
-        $this->perPage = $perPage;
+        foreach ($options ?? [] as $key => $option) {
+            if ($key !== 'method') {
+                $params[$key] = $option;
+            }
+        }
+
+        return $params;
     }
 
 }

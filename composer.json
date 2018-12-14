@@ -3,7 +3,6 @@
   "description": "Unofficial PHP SDK for Flow, a chilean payment gateway.",
   "type": "library",
   "license": "MIT",
-  "version": "1.0.0",
   "authors": [
     {
       "name": "Italo Baeza C.",
@@ -11,8 +10,8 @@
     }
   ],
   "support": {
-    "source": "https://github.com/darkghosthunter/flow-sdk",
-    "wiki": "https://github.com/darkghosthunter/flow-sdk/wiki",
+    "source": "https://github.com/DarkGhostHunter/FlowSdk",
+    "wiki": "https://github.com/DarkGhostHunter/FlowSdk/wiki",
     "docs": "https://www.flow.cl/docs/api.html",
     "email": "soporte@flow.cl"
   },
