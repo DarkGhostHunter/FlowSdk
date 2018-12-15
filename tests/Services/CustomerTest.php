@@ -34,7 +34,7 @@ class CustomerTest extends TestCase
         $this->flow->expects('send')
             ->with('post', \Mockery::type('string'), \Mockery::type('array'))
             ->andReturn([
-                'status' => 0
+                'status' => 3
             ]);
 
         $resource = $this->service->create([]);

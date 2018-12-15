@@ -32,8 +32,8 @@ class InvoiceTest extends TestCase
         $this->flow->expects('send')
             ->with('get', \Mockery::type('string'), ['invoiceId' => '1'])
             ->andReturn([
-                'attemped' => 1,
-                'status' => 1
+                'attemped' => 0,
+                'status' => 0
             ]);
 
         $resource = $this->service->get('1');

@@ -49,7 +49,9 @@ class SubscriptionResourceTest extends TestCase
     {
         $this->mockService->expects('getId')->andReturn('subscriptionId');
 
-        $this->resource->status = 4;
+        $this->resource->set('status', 4);
+
+        $this->resource->setExists(false);
 
         $subscription = $this->resource->cancel(true);
 

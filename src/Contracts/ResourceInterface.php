@@ -62,7 +62,7 @@ interface ResourceInterface
     /**
      * Return if the Resource exists in Flow or has been soft-deleted
      *
-     * @return mixed
+     * @return bool
      */
     public function exists();
 

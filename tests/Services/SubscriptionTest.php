@@ -32,7 +32,8 @@ class SubscriptionTest extends TestCase
         $this->flow->expects('send')
             ->with('get', \Mockery::type('string'), ['subscriptionId' => '1'])
             ->andReturn([
-                'cancel_at' => '2018-01-01'
+                'cancel_at' => '2018-01-01',
+                'status' => 4
             ]);
 
         $resource = $this->service->get('1');

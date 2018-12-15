@@ -7,6 +7,16 @@ use DarkGhostHunter\FlowSdk\Resources\BasicResource;
 use DarkGhostHunter\FlowSdk\Resources\CustomerResource;
 use DarkGhostHunter\FlowSdk\Responses\BasicResponse;
 
+/**
+ * Class Customer
+ * @package DarkGhostHunter\FlowSdk\Services
+ *
+ * @method CustomerResource create(array $attributes)
+ * @method CustomerResource get(string $id, $options = null)
+ * @method CustomerResource update($id, ...$attributes)
+ * @method CustomerResource delete(string $id)
+ *
+ */
 class Customer extends BaseService
 {
     use Concerns\HasCrudOperations,
@@ -35,7 +45,7 @@ class Customer extends BaseService
     /**
      * Resource Class to instantiate
      *
-     * @var \DarkGhostHunter\FlowSdk\Resources\CustomerResource
+     * @var string
      */
     protected $resourceClass = CustomerResource::class;
 
@@ -53,7 +63,8 @@ class Customer extends BaseService
      */
     protected function calcResourceExistence(ResourceInterface $resource)
     {
-        return $resource->status !== 0;
+        // A customer is deleted only when is status is 3. Otherwise, it may be inactive
+        return $resource->status !== 3;
     }
 
     /*
@@ -89,7 +100,7 @@ class Customer extends BaseService
      * Returns the Credit Card Registration Resource Status
      *
      * @param string $token
-     * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|\DarkGhostHunter\FlowSdk\Resources\BasicResource|CustomerResource
+     * @return BasicResource & CustomerResource
      * @throws \Exception
      */
     public function getCard(string $token)
@@ -114,7 +125,7 @@ class Customer extends BaseService
      * Unregisters a Credit Card from the Customer
      *
      * @param string $customerId
-     * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|BasicResource|CustomerResource
+     * @return BasicResource & CustomerResource
      * @throws \Exception
      */
     public function unregisterCard(string $customerId)
@@ -160,7 +171,7 @@ class Customer extends BaseService
      * Credit Card
      *
      * @param array $attributes
-     * @return \DarkGhostHunter\FlowSdk\Resource|BasicResource|CustomerResource
+     * @return BasicResource
      * @throws \Exception
      */
     public function createCharge(array $attributes)

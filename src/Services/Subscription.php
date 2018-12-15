@@ -5,6 +5,16 @@ namespace DarkGhostHunter\FlowSdk\Services;
 use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
 use DarkGhostHunter\FlowSdk\Resources\SubscriptionResource;
 
+/**
+ * Class Subscription
+ * @package DarkGhostHunter\FlowSdk\Services
+ *
+ * @method SubscriptionResource create(array $attributes)
+ * @method SubscriptionResource get(string $id, $options = null)
+ * @method SubscriptionResource update($id, ...$attributes)
+ * @method \DarkGhostHunter\FlowSdk\Responses\PagedResponse getPage(int $page, array $options = null)
+ *
+ */
 class Subscription extends BaseService
 {
     use Concerns\HasCrudOperations,
@@ -56,13 +66,13 @@ class Subscription extends BaseService
     /**
      * Calculates the Resource existence based its attributes (or presence)
      *
-     * @param ResourceInterface $resource
+     * @param ResourceInterface & SubscriptionResource $resource
      * @return bool
      */
     protected function calcResourceExistence(ResourceInterface $resource)
     {
-        // It exists if "cancelled at" is empty, or if is before now.
-        return ! ($resource->cancel_at && strtotime($resource->cancel_at) < time());
+        // It exists if the "status" is not cancelled
+        return $resource->status !== 4;
     }
 
     /*
@@ -76,7 +86,7 @@ class Subscription extends BaseService
      *
      * @param string $id
      * @param bool $atPeriodEnd
-     * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|\DarkGhostHunter\FlowSdk\Resources\BasicResource
+     * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource & SubscriptionResource
      * @throws \Exception
      */
     public function cancel(string $id, bool $atPeriodEnd)
@@ -101,7 +111,7 @@ class Subscription extends BaseService
      *
      * @param string $subscriptionId
      * @param string $couponId
-     * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource
+     * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource & SubscriptionResource
      * @throws \Exception
      */
     public function addCoupon(string $subscriptionId, string $couponId)
@@ -125,7 +135,7 @@ class Subscription extends BaseService
      * Removes a Coupon from the Subscription
      *
      * @param string $subscriptionId
-     * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource
+     * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource & SubscriptionResource
      * @throws \Exception
      */
     public function removeCoupon(string $subscriptionId)
@@ -137,9 +147,7 @@ class Subscription extends BaseService
             $this->flow->send(
                 'post',
                 $this->endpoint . '/deleteCoupon',
-                [
-                    'subscriptionId' => $subscriptionId,
-                ]
+                ['subscriptionId' => $subscriptionId]
             )
         );
     }
