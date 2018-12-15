@@ -1,7 +1,6 @@
 branches:
   only:
-    - master
-    - stable
+    - legacy
 
 language: php
 php:
