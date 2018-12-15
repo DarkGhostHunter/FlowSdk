@@ -4,11 +4,6 @@ namespace DarkGhostHunter\FlowSdk\Services\Concerns;
 
 use DarkGhostHunter\FlowSdk\Responses\BasicResponse;
 
-/**
- * Trait HasCrudOperations
- *
- * @package DarkGhostHunter\FlowSdk\Services\Concerns
- */
 trait HasCrudOperations
 {
 

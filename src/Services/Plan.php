@@ -59,7 +59,7 @@ class Plan extends BaseService
             return ['urlCallback' => $urlCallback ];
         }
 
-        return ;
+        return;
     }
 
     /**
@@ -71,6 +71,6 @@ class Plan extends BaseService
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // By default, the resource exists if its not null or false.
-        return (int)$resource->status === 1;
+        return $resource->status !== 0;
     }
 }

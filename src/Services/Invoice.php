@@ -5,6 +5,13 @@ namespace DarkGhostHunter\FlowSdk\Services;
 use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
 use DarkGhostHunter\FlowSdk\Resources\InvoiceResource;
 
+/**
+ * Class Invoice
+ * @package DarkGhostHunter\FlowSdk\Services
+ *
+ * @method InvoiceResource get(string $id, $options = null)
+ *
+ */
 class Invoice extends BaseService
 {
     use Concerns\HasCrudOperations;
@@ -39,7 +46,7 @@ class Invoice extends BaseService
     /**
      * Resource Class to instantiate
      *
-     * @var InvoiceResource
+     * @var string
      */
     protected $resourceClass = InvoiceResource::class;
 
@@ -52,13 +59,13 @@ class Invoice extends BaseService
     /**
      * Calculates the Resource existence based its attributes (or presence)
      *
-     * @param ResourceInterface $resource
+     * @param ResourceInterface & InvoiceResource $resource
      * @return bool
      */
     protected function calcResourceExistence(ResourceInterface $resource)
     {
-        // The Invoice "doesn't exists" when its status is unpaid and "attemped" is "dont pay".
-        return !((int)$resource->status === 0) && ((int)$resource->attemped === 0);
+        // It exists except when is unpaid and never to be paid.
+        return ! ($resource->status === 0 && $resource->attemped === 0);
     }
 
     /*
@@ -71,7 +78,7 @@ class Invoice extends BaseService
      * Cancels an Invoice
      *
      * @param string $id
-     * @return \DarkGhostHunter\FlowSdk\Contracts\ResourceInterface|\DarkGhostHunter\FlowSdk\Resources\BasicResource|InvoiceResource
+     * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource & InvoiceResource
      * @throws \Exception
      */
     public function cancel(string $id)

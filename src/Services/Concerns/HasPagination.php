@@ -4,12 +4,6 @@ namespace DarkGhostHunter\FlowSdk\Services\Concerns;
 
 use DarkGhostHunter\FlowSdk\Responses\PagedResponse;
 
-/**
- * Trait HasPagination
- * @package DarkGhostHunter\FlowSdk\Services\Concerns
- *
- * @mixin \DarkGhostHunter\FlowSdk\Services\BaseService
- */
 trait HasPagination
 {
     /**

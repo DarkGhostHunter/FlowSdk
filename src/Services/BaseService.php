@@ -211,7 +211,7 @@ abstract class BaseService implements ServiceInterface
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // By default, the resource exists if its not null or false.
-        return !!$resource;
+        return (bool)$resource;
     }
 
     /**

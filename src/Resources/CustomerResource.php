@@ -2,6 +2,22 @@
 
 namespace DarkGhostHunter\FlowSdk\Resources;
 
+/**
+ * Class CustomerResource
+ * @package DarkGhostHunter\FlowSdk\Resources
+ *
+ * @property-read string $customerId
+ * @property-read string $created
+ * @property string $email
+ * @property string $name
+ * @property-read string $pay_mode
+ * @property-read string $creditCardType
+ * @property-read string $last4CardDigits
+ * @property string $externalId
+ * @property-read int $status
+ * @property-read string $registerDate
+ *
+ */
 class CustomerResource extends BasicResource
 {
 
@@ -15,7 +31,7 @@ class CustomerResource extends BasicResource
      * Creates a petition to Register the Credit Card of this Customer
      *
      * @param string|null $urlReturn
-     * @return bool
+     * @return bool|\DarkGhostHunter\FlowSdk\Responses\BasicResponse
      */
     public function registerCard(string $urlReturn = null)
     {
@@ -28,7 +44,7 @@ class CustomerResource extends BasicResource
     /**
      * Removes the Registered Credit Card for this Customer
      *
-     * @return mixed
+     * @return \DarkGhostHunter\FlowSdk\Resources\BasicResource & \DarkGhostHunter\FlowSdk\Resources\CustomerResource;
      */
     public function unregisterCard()
     {
@@ -42,7 +58,7 @@ class CustomerResource extends BasicResource
      * Immediately charges a desired amount into the registered Credit Card
      *
      * @param array $attributes
-     * @return bool
+     * @return bool|\DarkGhostHunter\FlowSdk\Resources\BasicResource
      */
     public function charge(array $attributes)
     {
@@ -59,7 +75,7 @@ class CustomerResource extends BasicResource
      *
      * @param string $idType
      * @param string $value
-     * @return mixed
+     * @return bool|\DarkGhostHunter\FlowSdk\Responses\BasicResponse
      */
     public function reverseCharge(string $idType, string $value)
     {
