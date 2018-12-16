@@ -133,7 +133,7 @@ class HasCrudOperationsTest extends TestCase
                 return $data;
             });
 
-        $this->service->setEditableAttributes([
+        $this->service->setUpdateableAttributes([
             'foo'
         ]);
 
@@ -203,7 +203,7 @@ class HasCrudOperationsTest extends TestCase
             ];
         };
 
-        $this->service->update([]);
+        $this->service->update('anyId', []);
 
     }
 

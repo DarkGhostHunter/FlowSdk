@@ -124,26 +124,23 @@ trait HasCrudOperations
      * @param mixed ...$attributes
      * @return mixed
      */
-    public function update($id, ...$attributes)
+    public function update($id, array $attributes)
     {
         if ($this->can('update')) {
 
             $this->flow->getLogger()->debug("Updating Resource Id: $this->id => $id");
 
-            $attributes = count($attributes) === 1 && is_array($attributes[0])
-                ? $attributes[0]
-                : $attributes;
-
-            $attributes = $this->editableAttributes
-                ? array_intersect_key($attributes, array_flip($this->editableAttributes))
+            $attributes = $this->updateableAttributes
+                ? array_intersect_key($attributes, array_flip($this->updateableAttributes))
                 : $attributes;
 
             return $this->make(
                 $this->performUpdate(
-                    array_merge($attributes, [$this->getId() => $id])
+                    array_merge($attributes, [$this->id => $id])
                 )
             );
         }
+
         throw new \BadMethodCallException('Method '.__FUNCTION__.' does not exist');
     }
 

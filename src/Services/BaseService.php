@@ -42,7 +42,7 @@ abstract class BaseService implements ServiceInterface
      *
      * @var array|null
      */
-    protected $editableAttributes;
+    protected $updateableAttributes;
 
     /**
      * Permitted actions of the Service Resources
@@ -142,17 +142,17 @@ abstract class BaseService implements ServiceInterface
     /**
      * @inheritdoc
      */
-    public function getEditableAttributes()
+    public function getUpdateableAttributes()
     {
-        return $this->editableAttributes;
+        return $this->updateableAttributes;
     }
 
     /**
      * @inheritdoc
      */
-    public function setEditableAttributes(array $editableAttributes)
+    public function setUpdateableAttributes(array $updateableAttributes)
     {
-        $this->editableAttributes = $editableAttributes;
+        $this->updateableAttributes = $updateableAttributes;
     }
 
     /**

@@ -37,6 +37,15 @@ class Subscription extends BaseService
     ];
 
     /**
+     * Update-able attributes. If null, no attributes will be filtered
+     *
+     * @var array|null
+     */
+    protected $updateableAttributes = [
+        'trial_period_days'
+    ];
+
+    /**
      * Resource Class to instantiate
      *
      * @var SubscriptionResource

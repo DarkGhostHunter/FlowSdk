@@ -81,22 +81,22 @@ class BaseServiceTest extends TestCase
         $this->assertTrue($this->service->can('delete'));
     }
 
-    public function testGetEditableAttributes()
+    public function testGetUpdateableAttributes()
     {
-        $this->assertNull($this->service->getEditableAttributes());
+        $this->assertNull($this->service->getUpdateableAttributes());
 
         $service = new class ($this->flow) extends BaseService {
-            protected $editableAttributes = ['foo', 'bar'];
+            protected $updateableAttributes = ['foo', 'bar'];
         };
 
-        $this->assertEquals(['foo', 'bar'], $service->getEditableAttributes());
+        $this->assertEquals(['foo', 'bar'], $service->getUpdateableAttributes());
     }
 
-    public function testSetEditableAttributes()
+    public function testSetUpdateableAttributes()
     {
-        $this->service->setEditableAttributes($array = ['foo', 'bar']);
+        $this->service->setUpdateableAttributes($array = ['foo', 'bar']);
 
-        $this->assertEquals($array, $this->service->getEditableAttributes());
+        $this->assertEquals($array, $this->service->getUpdateableAttributes());
     }
 
     public function testSetEndpoint()

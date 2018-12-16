@@ -28,7 +28,7 @@ class Coupon extends BaseService
      *
      * @var array|null
      */
-    protected $editableAttributes = [
+    protected $updateableAttributes = [
         'name'
     ];
 
