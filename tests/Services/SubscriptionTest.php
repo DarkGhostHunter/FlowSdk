@@ -54,6 +54,28 @@ class SubscriptionTest extends TestCase
         $this->assertTrue($resource->exists());
     }
 
+    public function testUpdatesSubscriptionWithOnlyUpdateableAttributes()
+    {
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), [
+                'subscriptionId' => 'theSubscriptionId',
+                'trial_period_days' => 20
+            ])
+            ->andReturnUsing(function ($method, $endpoint, $data) {
+                return $data;
+            });
+
+        $resource = $this->service->update('theSubscriptionId', [
+            'foo' => 'bar',
+            'trial_period_days' => 20
+        ]);
+
+        $this->assertEquals('20', $resource->trial_period_days);
+        $this->assertNull($resource->foo);
+        $this->assertEquals('theSubscriptionId', $resource->subscriptionId);
+
+    }
+
     public function testRemoveCoupon()
     {
         $this->flow->expects('send')

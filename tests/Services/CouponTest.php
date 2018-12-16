@@ -53,4 +53,26 @@ class CouponTest extends TestCase
 
         $this->assertTrue($resource->exists());
     }
+
+    public function testUpdatesCouponWithOnlyUpdateableAttributes()
+    {
+        $this->flow->expects('send')
+            ->with('post', \Mockery::type('string'), [
+                'couponId' => 'theCouponId',
+                'name' => 'newName'
+            ])
+            ->andReturnUsing(function ($method, $endpoint, $data) {
+                return $data;
+            });
+
+        $resource = $this->service->update('theCouponId', [
+            'foo' => 'bar',
+            'name' => 'newName'
+        ]);
+
+        $this->assertEquals('newName', $resource->name);
+        $this->assertNull($resource->foo);
+        $this->assertEquals('theCouponId', $resource->couponId);
+
+    }
 }

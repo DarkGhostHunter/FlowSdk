@@ -49,14 +49,14 @@ interface ServiceInterface
      *
      * @return array
      */
-    public function getEditableAttributes();
+    public function getUpdateableAttributes();
 
     /**
      * Set the editable attributes for the Service Resource
      *
      * @param array $editable
      */
-    public function setEditableAttributes(array $editable);
+    public function setUpdateableAttributes(array $editable);
 
     /**
      * Returns if an Method can be performed in the Service

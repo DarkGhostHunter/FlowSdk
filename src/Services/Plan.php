@@ -71,6 +71,6 @@ class Plan extends BaseService
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // By default, the resource exists if its not null or false.
-        return $resource->status !== 0;
+        return $resource->get('status') !== 0;
     }
 }

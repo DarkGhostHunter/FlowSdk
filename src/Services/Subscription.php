@@ -37,6 +37,15 @@ class Subscription extends BaseService
     ];
 
     /**
+     * Update-able attributes. If null, no attributes will be filtered
+     *
+     * @var array|null
+     */
+    protected $updateableAttributes = [
+        'trial_period_days'
+    ];
+
+    /**
      * Resource Class to instantiate
      *
      * @var SubscriptionResource
@@ -72,7 +81,7 @@ class Subscription extends BaseService
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // It exists if the "status" is not cancelled
-        return $resource->status !== 4;
+        return $resource->get('status') !== 4;
     }
 
     /*

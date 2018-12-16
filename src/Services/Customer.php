@@ -64,7 +64,7 @@ class Customer extends BaseService
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // A customer is active (1) or is deleted.
-        return $resource->status === 1;
+        return $resource->get('status') === 1;
     }
 
     /*
