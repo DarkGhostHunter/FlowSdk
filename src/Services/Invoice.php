@@ -65,7 +65,8 @@ class Invoice extends BaseService
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // It exists except when is unpaid and never to be paid.
-        return ! ($resource->status === 0 && $resource->attemped === 0);
+        return ! ($resource->get('status') === 0
+            && $resource->get('attemped') === 0);
     }
 
     /*

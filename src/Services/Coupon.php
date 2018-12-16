@@ -59,6 +59,6 @@ class Coupon extends BaseService
      */
     protected function calcResourceExistence(ResourceInterface $resource)
     {
-        return $resource->status === 1;
+        return $resource->get('status') === 1;
     }
 }

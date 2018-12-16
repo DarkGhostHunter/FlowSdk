@@ -81,7 +81,7 @@ class Subscription extends BaseService
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // It exists if the "status" is not cancelled
-        return $resource->status !== 4;
+        return $resource->get('status') !== 4;
     }
 
     /*
