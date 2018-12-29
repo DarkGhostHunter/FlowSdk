@@ -49,9 +49,7 @@ if (!function_exists('currentUrlPath')) {
 
         // Form the URL and add the path.
         $url = $_SERVER['HTTPS'] ?? false ? 'https' : 'http' .
-                '://' . $_SERVER['HTTP_HOST'] .
-                ((int)$_SERVER['SERVER_PORT'] === 80 ? '' : ':' . $_SERVER['SERVER_PORT']) .
-                '/' . $requestPath;
+                '://' . $_SERVER['HTTP_HOST'] . '/' . $requestPath;
 
         // Parse the $url
         $parsed = pathinfo($url);
