@@ -58,7 +58,7 @@ class BasicResourceTest extends TestCase
     {
         $this->resource->setService($service = \Mockery::instanceMock(ServiceInterface::class));
 
-        $this->resource->set('foo', 'bar');
+        $this->resource->setAttribute('foo', 'bar');
 
         $service->expects('getId')->andReturn('foo');
 
@@ -69,7 +69,7 @@ class BasicResourceTest extends TestCase
     {
         $this->resource->setService($service = \Mockery::instanceMock(ServiceInterface::class));
 
-        $this->resource->set('foo', 'bar');
+        $this->resource->setAttribute('foo', 'bar');
 
         $service->expects('getId')->andReturn('notFoo');
 
@@ -80,7 +80,7 @@ class BasicResourceTest extends TestCase
     {
         $this->resource->setService($service = \Mockery::instanceMock(ServiceInterface::class));
 
-        $this->resource->set('foo', 'bar');
+        $this->resource->setAttribute('foo', 'bar');
 
         $service->expects('getId')->andReturn('foo');
 

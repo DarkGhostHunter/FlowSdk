@@ -59,14 +59,14 @@ class Invoice extends BaseService
     /**
      * Calculates the Resource existence based its attributes (or presence)
      *
-     * @param ResourceInterface & InvoiceResource $resource
+     * @param \DarkGhostHunter\Fluid\Fluid&ResourceInterface&InvoiceResource $resource
      * @return bool
      */
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // It exists except when is unpaid and never to be paid.
-        return ! ($resource->get('status') === 0
-            && $resource->get('attemped') === 0);
+        return ! ($resource->getAttribute('status') === 0
+            && $resource->getAttribute('attemped') === 0);
     }
 
     /*

@@ -2,9 +2,9 @@
 
 namespace DarkGhostHunter\FlowSdk\Responses;
 
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 
-class BasicResponse extends Fluent
+class BasicResponse extends Fluid
 {
     /**
      * Returns a fully functional string

@@ -6,7 +6,7 @@ use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Adapter\AdapterException;
 use DarkGhostHunter\FlowSdk\Exceptions\Transactions\TransactionException;
 use DarkGhostHunter\FlowSdk\Flow;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 use GuzzleHttp\Client;
 
 class GuzzleAdapter implements AdapterInterface
@@ -21,7 +21,7 @@ class GuzzleAdapter implements AdapterInterface
     /**
      * Credentials
      *
-     * @var Fluent
+     * @var Fluid
      */
     protected $credentials;
 

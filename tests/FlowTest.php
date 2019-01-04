@@ -6,7 +6,7 @@ use DarkGhostHunter\FlowSdk\Adapters\Processor;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
 use DarkGhostHunter\FlowSdk\Flow;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 use DarkGhostHunter\FlowSdk\Services\Coupon;
 use DarkGhostHunter\FlowSdk\Services\Customer;
 use DarkGhostHunter\FlowSdk\Services\Invoice;
@@ -155,7 +155,7 @@ class FlowTest extends TestCase
             'secret'    => 'f8b45f9b8bcdb5702dc86a1b894492303741c405',
         ]);
 
-        $this->assertInstanceOf(Fluent::class, $this->flow->getCredentials());
+        $this->assertInstanceOf(Fluid::class, $this->flow->getCredentials());
         $this->assertEquals($credentials, $this->flow->getCredentials()->toArray());
     }
 
@@ -181,7 +181,7 @@ class FlowTest extends TestCase
 
         $this->assertFalse($flow->isProduction());
 
-        $this->assertInstanceOf(Fluent::class, $flow->getCredentials());
+        $this->assertInstanceOf(Fluid::class, $flow->getCredentials());
         $this->assertEquals($credentials, $flow->getCredentials()->toArray());
     }
 

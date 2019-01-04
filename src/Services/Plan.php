@@ -65,12 +65,12 @@ class Plan extends BaseService
     /**
      * Calculates the Resource existence based its attributes (or presence)
      *
-     * @param ResourceInterface $resource
+     * @param \DarkGhostHunter\Fluid\Fluid&ResourceInterface $resource
      * @return bool
      */
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // By default, the resource exists if its not null or false.
-        return $resource->get('status') !== 0;
+        return $resource->getAttribute('status') !== 0;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace DarkGhostHunter\FlowSdk\Responses;
 
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 
 /**
  * Class PagedResponse
@@ -13,7 +13,7 @@ use DarkGhostHunter\FlowSdk\Helpers\Fluent;
  * @property-read int $page
  * @property-read bool $hasMore
  */
-class PagedResponse extends Fluent
+class PagedResponse extends Fluid
 {
 
     /**

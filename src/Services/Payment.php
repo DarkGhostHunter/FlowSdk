@@ -103,7 +103,7 @@ class Payment extends BaseService
         // Log Debug
         $this->flow->getLogger()->debug('Creating by Email: ' . json_encode($attributes));
 
-        return BasicResponse::make(
+        return new BasicResponse(
             $this->performCreate($attributes, ['method' => 'createEmail'])
         );
     }

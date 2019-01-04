@@ -3,11 +3,11 @@
 namespace DarkGhostHunter\FlowSdk\Adapters;
 
 use DarkGhostHunter\FlowSdk\Flow;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 
 class Processor
 {
-    /** @var Fluent */
+    /** @var Fluid */
     protected $flow;
 
     /** @var array */
