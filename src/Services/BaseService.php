@@ -190,7 +190,7 @@ abstract class BaseService implements ServiceInterface
         // Set the Defaults (Webhooks, Returns)
         if ($defaults = $this->getDefaultsForResource($resource)) {
             foreach ($defaults as $key => $default) {
-                $resource->set($key, $default);
+                $resource->setAttribute($key, $default);
             }
         }
 
@@ -205,7 +205,7 @@ abstract class BaseService implements ServiceInterface
     /**
      * Calculates the Resource existence based its attributes (or presence)
      *
-     * @param ResourceInterface $resource
+     * @param \DarkGhostHunter\Fluid\Fluid&ResourceInterface $resource
      * @return bool
      */
     protected function calcResourceExistence(ResourceInterface $resource)

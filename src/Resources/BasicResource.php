@@ -4,11 +4,11 @@ namespace DarkGhostHunter\FlowSdk\Resources;
 
 use DarkGhostHunter\FlowSdk\Contracts\ResourceInterface;
 use DarkGhostHunter\FlowSdk\Contracts\ServiceInterface;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 use DarkGhostHunter\FlowSdk\Responses\BasicResponse;
 use DarkGhostHunter\FlowSdk\Services\BaseService;
 
-class BasicResource extends Fluent implements ResourceInterface
+class BasicResource extends Fluid implements ResourceInterface
 {
 
     /**

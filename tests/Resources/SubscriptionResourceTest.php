@@ -49,7 +49,7 @@ class SubscriptionResourceTest extends TestCase
     {
         $this->mockService->expects('getId')->andReturn('subscriptionId');
 
-        $this->resource->set('status', 4);
+        $this->resource->setAttribute('status', 4);
 
         $this->resource->setExists(false);
 

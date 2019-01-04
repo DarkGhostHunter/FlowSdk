@@ -75,13 +75,13 @@ class Subscription extends BaseService
     /**
      * Calculates the Resource existence based its attributes (or presence)
      *
-     * @param ResourceInterface & SubscriptionResource $resource
+     * @param \DarkGhostHunter\Fluid\Fluid&ResourceInterface $resource
      * @return bool
      */
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // It exists if the "status" is not cancelled
-        return $resource->get('status') !== 4;
+        return $resource->getAttribute('status') !== 4;
     }
 
     /*

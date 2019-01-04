@@ -58,13 +58,13 @@ class Customer extends BaseService
     /**
      * Calculates the Resource existence based its attributes (or presence)
      *
-     * @param ResourceInterface $resource
+     * @param \DarkGhostHunter\Fluid\Fluid&ResourceInterface $resource
      * @return bool
      */
     protected function calcResourceExistence(ResourceInterface $resource)
     {
         // A customer is active (1) or is deleted.
-        return $resource->get('status') === 1;
+        return $resource->getAttribute('status') === 1;
     }
 
     /*
@@ -236,11 +236,12 @@ class Customer extends BaseService
 
         // Transform each item into a Charge Resource instead of a Customer Resource
         foreach ($items as &$item) {
+            /** @var \DarkGhostHunter\Fluid\Fluid $item */
             $item = $this->makeCharge($item->toArray());
         }
 
         // Put the Charge Resources into the response
-        $pagedResponse->setRawAttributes($items);
+        $pagedResponse->setAttributes($items);
 
         // Profit
         return $pagedResponse;

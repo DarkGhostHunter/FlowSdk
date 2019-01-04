@@ -4,7 +4,7 @@ namespace Tests\Adapters;
 
 use DarkGhostHunter\FlowSdk\Adapters\Processor;
 use DarkGhostHunter\FlowSdk\Flow;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 use PHPUnit\Framework\TestCase;
 
 class ProcessorTest extends TestCase
@@ -24,7 +24,7 @@ class ProcessorTest extends TestCase
         $this->flow = \Mockery::instanceMock(Flow::class);
 
         $this->flow->expects('getCredentials')->andReturn(
-            new Fluent(['apiKey' => 'theApiKey', 'secret' => 'theSecret'])
+            new Fluid(['apiKey' => 'theApiKey', 'secret' => 'theSecret'])
         );
 
         $this->flow->expects('getWebhookSecret')->andReturn(

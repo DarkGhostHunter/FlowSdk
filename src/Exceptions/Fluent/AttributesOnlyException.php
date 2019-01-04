@@ -1,6 +1,6 @@
 <?php
 
-namespace DarkGhostHunter\FlowSdk\Exceptions\Fluent;
+namespace DarkGhostHunter\Fluid\Fluid;
 
 use DarkGhostHunter\FlowSdk\Exceptions\FlowSdkException;
 use Throwable;

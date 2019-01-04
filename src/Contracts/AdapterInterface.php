@@ -3,7 +3,7 @@
 namespace DarkGhostHunter\FlowSdk\Contracts;
 
 use DarkGhostHunter\FlowSdk\Flow;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 
 interface AdapterInterface
 {

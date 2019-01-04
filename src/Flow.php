@@ -2,11 +2,11 @@
 
 namespace DarkGhostHunter\FlowSdk;
 
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
 use DarkGhostHunter\FlowSdk\Adapters\Processor;
 use DarkGhostHunter\FlowSdk\Adapters\GuzzleAdapter;
+use DarkGhostHunter\Fluid\Fluid;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -46,7 +46,7 @@ class Flow
     /**
      * Credentials to use
      *
-     * @var Fluent
+     * @var Fluid
      */
     protected $credentials;
 
@@ -185,7 +185,7 @@ class Flow
     /**
      * Get the Credentials for this service
      *
-     * @return Fluent
+     * @return Fluid
      */
     public function getCredentials()
     {
@@ -200,7 +200,7 @@ class Flow
      */
     public function setCredentials(array $credentials)
     {
-        $this->credentials = new Fluent(
+        $this->credentials = new Fluid(
             array_intersect_key($credentials, array_flip(['apiKey', 'secret']))
         );
     }

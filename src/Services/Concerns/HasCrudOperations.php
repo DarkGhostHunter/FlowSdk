@@ -2,6 +2,7 @@
 
 namespace DarkGhostHunter\FlowSdk\Services\Concerns;
 
+use BadMethodCallException;
 use DarkGhostHunter\FlowSdk\Responses\BasicResponse;
 
 trait HasCrudOperations
@@ -17,7 +18,7 @@ trait HasCrudOperations
      * Commits the transaction into Flow, and returns a Response
      *
      * @param array $attributes
-     * @return \DarkGhostHunter\FlowSdk\Helpers\Fluent|BasicResponse
+     * @return \DarkGhostHunter\Fluid\Fluid|BasicResponse
      * @throws \Exception
      */
     public function commit(array $attributes)
@@ -64,7 +65,7 @@ trait HasCrudOperations
                 $this->performCreate($attributes)
             );
         }
-        throw new \BadMethodCallException('Method '.__FUNCTION__.' does not exist');
+        throw new BadMethodCallException('Method '.__FUNCTION__.' does not exist');
     }
 
     /**
@@ -72,7 +73,7 @@ trait HasCrudOperations
      *
      * @param array $attributes
      * @param array|null $options
-     * @return mixed
+     * @return array
      */
     protected function performCreate(array $attributes, array $options = null)
     {

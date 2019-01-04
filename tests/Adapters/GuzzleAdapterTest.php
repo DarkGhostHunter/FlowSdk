@@ -7,7 +7,7 @@ use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Adapter\AdapterException;
 use DarkGhostHunter\FlowSdk\Exceptions\Transactions\TransactionException;
 use DarkGhostHunter\FlowSdk\Flow;
-use DarkGhostHunter\FlowSdk\Helpers\Fluent;
+use DarkGhostHunter\Fluid\Fluid;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
@@ -37,7 +37,7 @@ class GuzzleAdapterTest extends TestCase
     {
         $this->mockFlow = \Mockery::instanceMock(Flow::class);
 
-        $this->mockFlow->expects('getCredentials')->andReturn(new Fluent([
+        $this->mockFlow->expects('getCredentials')->andReturn(new Fluid([
             'apiKey' => 'apiKey',
             'secret' => 'secret'
         ]));
