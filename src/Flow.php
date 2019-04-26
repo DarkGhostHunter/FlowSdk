@@ -39,7 +39,7 @@ class Flow
      * @var array
      */
     protected $endpoints = [
-        'sandbox' => 'https://flow.tuxpan.com/api',
+        'sandbox' => 'https://sandbox.flow.cl/api',
         'production' => 'https://www.flow.cl/api',
     ];
 
