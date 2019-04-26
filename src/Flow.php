@@ -2,10 +2,10 @@
 
 namespace DarkGhostHunter\FlowSdk;
 
+use DarkGhostHunter\FlowSdk\Adapters\GuzzleAdapter;
+use DarkGhostHunter\FlowSdk\Adapters\Processor;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
-use DarkGhostHunter\FlowSdk\Adapters\Processor;
-use DarkGhostHunter\FlowSdk\Adapters\GuzzleAdapter;
 use DarkGhostHunter\Fluid\Fluid;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -39,8 +39,8 @@ class Flow
      * @var array
      */
     protected $endpoints = [
-        'sandbox' => 'https://flow.tuxpan.com/api',
-        'production' => 'https://www.flow.cl/api',
+        'sandbox'       => 'https://sandbox.flow.cl/api',
+        'production'    => 'https://www.flow.cl/api',
     ];
 
     /**

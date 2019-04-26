@@ -6,7 +6,6 @@ use DarkGhostHunter\FlowSdk\Adapters\Processor;
 use DarkGhostHunter\FlowSdk\Contracts\AdapterInterface;
 use DarkGhostHunter\FlowSdk\Exceptions\Flow\InvalidUrlException;
 use DarkGhostHunter\FlowSdk\Flow;
-use DarkGhostHunter\Fluid\Fluid;
 use DarkGhostHunter\FlowSdk\Services\Coupon;
 use DarkGhostHunter\FlowSdk\Services\Customer;
 use DarkGhostHunter\FlowSdk\Services\Invoice;
@@ -15,6 +14,7 @@ use DarkGhostHunter\FlowSdk\Services\Plan;
 use DarkGhostHunter\FlowSdk\Services\Refund;
 use DarkGhostHunter\FlowSdk\Services\Settlement;
 use DarkGhostHunter\FlowSdk\Services\Subscription;
+use DarkGhostHunter\Fluid\Fluid;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -51,7 +51,7 @@ class FlowTest extends TestCase
     public function testGetEndpointForEnvironment()
     {
         $this->flow->isProduction(false);
-        $this->assertEquals('https://flow.tuxpan.com/api', $this->flow->getEndpoint());
+        $this->assertEquals('https://sandbox.flow.cl/api', $this->flow->getEndpoint());
 
         $this->flow->isProduction(true);
         $this->assertEquals('https://www.flow.cl/api', $this->flow->getEndpoint());
@@ -290,7 +290,7 @@ class FlowTest extends TestCase
         );
 
         $adapter->expects('get')
-            ->with('https://flow.tuxpan.com/api/endpoint/method' . $params)
+            ->with('https://sandbox.flow.cl/api/endpoint/method' . $params)
             ->andReturn(['foo' => 'bar']);
 
         $response = $this->flow->send('get', '/endpoint/method/', ['foo' => 'bar']);
@@ -316,7 +316,7 @@ class FlowTest extends TestCase
         );
 
         $adapter->expects('post')
-            ->with('https://flow.tuxpan.com/api/endpoint/method', $params)
+            ->with('https://sandbox.flow.cl/api/endpoint/method', $params)
             ->andReturn(['foo' => 'bar']);
 
         $response = $this->flow->send('post', '/endpoint/method/', ['foo' => 'bar']);
