@@ -22,7 +22,7 @@
     "ext-curl": "*",
     "ext-openssl": "*",
     "psr/log": "^1.0.0",
-    "guzzlehttp/guzzle": "6.3.*",
+    "guzzlehttp/guzzle": "6.3.* || 6.5.*",
     "katzgrau/klogger": "1.2.*",
     "darkghosthunter/fluid": "^1.0"
   },
